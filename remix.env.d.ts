@@ -3,6 +3,7 @@
 /// <reference types="@shopify/oxygen-workers-types" />
 
 import type {Storefront} from '@shopify/hydrogen';
+import type {Pack} from '~/lib/pack/create-pack-client';
 import type {HydrogenSession} from './server';
 
 declare global {
@@ -20,6 +21,7 @@ declare global {
     PRIVATE_STOREFRONT_API_TOKEN: string;
     PUBLIC_STORE_DOMAIN: string;
     PUBLIC_STOREFRONT_ID: string;
+    PACK_SECRET_TOKEN: string;
   }
 }
 
@@ -31,5 +33,6 @@ declare module '@shopify/remix-oxygen' {
     session: HydrogenSession;
     storefront: Storefront;
     env: Env;
+    pack: Pack;
   }
 }

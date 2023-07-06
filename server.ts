@@ -8,6 +8,7 @@ import {
   type SessionStorage,
   type Session,
 } from '@shopify/remix-oxygen';
+import {createPackClient} from '~/lib/pack/create-pack-client';
 
 /**
  * Export a fetch handler in module format.
@@ -46,6 +47,12 @@ export default {
         storefrontHeaders: getStorefrontHeaders(request),
       });
 
+      const pack = createPackClient({
+        cache,
+        waitUntil,
+        secretToken: env.PACK_SECRET_TOKEN,
+      });
+
       /**
        * Create a Remix request handler and pass
        * Hydrogen's Storefront client to the loader context.
@@ -53,7 +60,7 @@ export default {
       const handleRequest = createRequestHandler({
         build: remixBuild,
         mode: process.env.NODE_ENV,
-        getLoadContext: () => ({session, storefront, env}),
+        getLoadContext: () => ({session, storefront, env, pack}),
       });
 
       const response = await handleRequest(request);
