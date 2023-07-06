@@ -1,6 +1,7 @@
 import {useLoaderData, Link} from '@remix-run/react';
 import {LoaderArgs} from '@shopify/remix-oxygen';
 import {Image} from '@shopify/hydrogen';
+import {RenderSections} from '~/lib/pack/render-sections';
 
 export function meta() {
   return [
@@ -10,18 +11,25 @@ export function meta() {
 }
 
 export async function loader({context}: LoaderArgs) {
-  return await context.storefront.query(COLLECTIONS_QUERY);
+  const {page} = await context.pack.query(HOME_PAGE_QUERY);
+  const {collections} = await context.storefront.query(COLLECTIONS_QUERY);
+
+  return {
+    page,
+    collections,
+  };
 }
 
 export default function Index() {
-  const {collections} = useLoaderData();
-  console.log(collections);
+  const {collections, page} = useLoaderData();
 
   return (
     <section className="w-full gap-4">
       <h2 className="whitespace-pre-wrap max-w-prose font-bold text-lead">
         Collections
       </h2>
+
+      <RenderSections pageData={page} />
 
       <div className="grid-flow-row grid gap-2 gap-y-6 md:gap-4 lg:gap-6 grid-cols-1 sm:grid-cols-3">
         {collections.nodes.map((collection: any) => {
@@ -49,6 +57,61 @@ export default function Index() {
     </section>
   );
 }
+
+const SECTION_FRAGMENT = `#graphql
+  fragment section on Section {
+    id
+    title
+    status
+    data
+    publishedAt
+    createdAt
+    updatedAt
+    parentContentType
+  }
+`;
+
+const HOME_PAGE_QUERY = `#graphql
+  query HomePage($cursor: String) {
+    page: pageByHandle(handle: "/") {
+      id
+      title
+      handle
+      description
+      status
+      seo {
+        title
+        description
+        image
+        keywords
+        noFollow
+        noIndex
+      }
+      sections(first: 25, after: $cursor) {
+        nodes {
+          ...section
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+      template {
+        id
+        title
+        type
+        status
+        publishedAt
+        createdAt
+        updatedAt
+      }
+      publishedAt
+      createdAt
+      updatedAt
+    }
+  }
+  ${SECTION_FRAGMENT}
+`;
 
 const COLLECTIONS_QUERY = `#graphql
   query FeaturedCollections {
