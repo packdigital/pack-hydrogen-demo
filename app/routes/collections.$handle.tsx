@@ -18,6 +18,9 @@ export async function loader({params, context, request}: LoaderArgs) {
   const searchParams = new URL(request.url).searchParams;
   const cursor = searchParams.get('cursor');
 
+  const {collectionPage} = await context.pack.query(COLLECTION_PAGE_QUERY, {
+    variables: {handle},
+  });
   const {collection} = await context.storefront.query(COLLECTION_QUERY, {
     variables: {
       handle,
@@ -33,6 +36,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   // json is a Remix utility for creating application/json responses
   // https://remix.run/docs/en/v1/utils/json
   return json({
+    collectionPage,
     collection,
   });
 }
@@ -46,6 +50,7 @@ export function meta({data}: any) {
 
 export default function Collection() {
   const {collection} = useLoaderData();
+
   return (
     <>
       <header className="grid w-full gap-8 py-8 justify-items-start">
@@ -70,6 +75,46 @@ export default function Collection() {
     </>
   );
 }
+
+const SECTION_FRAGMENT = `#graphql
+  fragment section on Section {
+    id
+    title
+    status
+    data
+    publishedAt
+    createdAt
+    updatedAt
+    parentContentType
+  }
+`;
+
+const COLLECTION_PAGE_QUERY = `#graphql
+  query CollectionPage($handle: String!) {
+    collectionPage: collectionPageByHandle(handle: $handle) {
+      id
+      title
+      handle
+      status
+      sections(first: 25) {
+        nodes {
+          ...section
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+      template {
+        id
+      }
+      publishedAt
+      createdAt
+      updatedAt
+    }
+  }
+  ${SECTION_FRAGMENT}
+`;
 
 const COLLECTION_QUERY = `#graphql
   query CollectionDetails($handle: String!, $cursor: String) {

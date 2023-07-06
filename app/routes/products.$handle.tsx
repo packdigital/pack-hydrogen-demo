@@ -6,7 +6,6 @@ import ProductOptions from '~/components/ProductOptions';
 export async function loader({params, context, request}: LoaderArgs) {
   const {handle} = params;
   const storeDomain = context.storefront.getShopifyDomain();
-  console.log('loader:storeDromain: ', storeDomain);
 
   const searchParams = new URL(request.url).searchParams;
   const selectedOptions: any = [];
@@ -16,6 +15,9 @@ export async function loader({params, context, request}: LoaderArgs) {
     selectedOptions.push({name, value});
   });
 
+  const {productPage} = await context.pack.query(PRODUCT_PAGE_QUERY, {
+    variables: {handle},
+  });
   const {product} = await context.storefront.query(PRODUCT_QUERY, {
     variables: {
       handle,
@@ -30,11 +32,11 @@ export async function loader({params, context, request}: LoaderArgs) {
   const selectedVariant =
     product.selectedVariant ?? product?.variants?.nodes[0];
 
-  return json({product, selectedVariant, storeDomain});
+  return json({product, productPage, selectedVariant, storeDomain});
 }
 
 export default function ProductHandle() {
-  const {product, selectedVariant, storeDomain} = useLoaderData();
+  const {product, productPage, selectedVariant, storeDomain} = useLoaderData();
   const orderable = selectedVariant?.availableForSale || false;
 
   return (
@@ -142,6 +144,47 @@ function ProductGallery({media}: any) {
     </div>
   );
 }
+
+const SECTION_FRAGMENT = `#graphql
+  fragment section on Section {
+    id
+    title
+    status
+    data
+    publishedAt
+    createdAt
+    updatedAt
+    parentContentType
+  }
+`;
+
+const PRODUCT_PAGE_QUERY = `#graphql
+  query ProductPage($handle: String!) {
+    productPage: productPageByHandle(handle: $handle) {
+      id
+      title
+      handle
+      description
+      status
+      sections(first: 25) {
+        nodes {
+          ...section
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+      template {
+        id
+      }
+      publishedAt
+      createdAt
+      updatedAt
+    }
+  }
+  ${SECTION_FRAGMENT}
+`;
 
 const PRODUCT_QUERY = `#graphql
   query product($handle: String!, $selectedOptions: [SelectedOptionInput!]!) {
