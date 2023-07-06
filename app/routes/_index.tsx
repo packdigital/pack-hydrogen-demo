@@ -1,7 +1,9 @@
 import {useLoaderData, Link} from '@remix-run/react';
 import {LoaderArgs} from '@shopify/remix-oxygen';
 import {Image} from '@shopify/hydrogen';
+import sections from '~/sections';
 import {RenderSections} from '~/lib/pack/render-sections';
+import {useCustomizerShell} from '~/lib/pack/useCustomizerShell';
 
 export function meta() {
   return [
@@ -22,6 +24,20 @@ export async function loader({context}: LoaderArgs) {
 
 export default function Index() {
   const {collections, page} = useLoaderData();
+  const {pageData, storefrontSettings} = useCustomizerShell({
+    environment: 'production',
+    isPreview: true,
+    sectionComponents: sections,
+    staticProps: {
+      page,
+      template: page.template?.type,
+      templateType: page.template?.type,
+      handle: page.handle,
+      title: page.title,
+      description: page.description,
+    },
+    storefrontSettingsSchema: {},
+  });
 
   return (
     <section className="w-full gap-4">

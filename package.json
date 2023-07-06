@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "shopify hydrogen build",
-    "dev": "shopify hydrogen dev",
+    "dev": "shopify hydrogen dev --port 8080",
     "preview": "npm run build && shopify hydrogen preview",
     "lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
     "typecheck": "tsc --noEmit"
@@ -20,6 +20,7 @@
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "isbot": "^3.6.6",
+    "penpal": "^6.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-intersection-observer": "^9.5.2",
