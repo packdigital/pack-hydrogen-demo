@@ -17,6 +17,7 @@ import {Layout} from './components/Layout';
 import {NotFound} from './components/NotFound';
 import {GenericError} from './components/GenericError';
 import {LoaderArgs} from '@shopify/remix-oxygen';
+import {PreviewProvider} from '~/lib/pack';
 
 export const links = () => {
   return [
@@ -34,14 +35,14 @@ export const links = () => {
 };
 
 export async function loader({context}: LoaderArgs) {
+  const isPreviewModeEnabled = await context.pack.isPreviewModeEnabled();
   const layout = await context.storefront.query(LAYOUT_QUERY);
-  return {layout};
+  return {layout, isPreviewModeEnabled};
 }
 
 export default function App() {
-  const data = useLoaderData();
-
-  const {name} = data.layout.shop;
+  const {layout, isPreviewModeEnabled} = useLoaderData();
+  const {name} = layout.shop;
 
   return (
     <html lang="en">
@@ -53,9 +54,11 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Layout title={name}>
-          <Outlet />
-        </Layout>
+        <PreviewProvider preview={isPreviewModeEnabled}>
+          <Layout title={name}>
+            <Outlet />
+          </Layout>
+        </PreviewProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -109,10 +112,10 @@ export function ErrorBoundary({error}: {error: Error}) {
 }
 
 const LAYOUT_QUERY = `#graphql
-  query layout {
-    shop {
-      name
-      description
-    }
+query layout {
+  shop {
+    name
+    description
   }
+}
 `;

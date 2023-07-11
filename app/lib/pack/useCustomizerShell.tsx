@@ -1,12 +1,13 @@
 import {useCallback, useEffect, useState} from 'react';
 import {useLocation, useNavigate} from '@remix-run/react';
 import {connectToParent} from 'penpal';
+import {preview} from 'vite';
 
 export const useCustomizerShell = ({
   environment = 'production',
   isPreview,
   sectionComponents,
-  staticProps,
+  data,
   storefrontSettingsSchema,
 }: any) => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export const useCustomizerShell = ({
     const sectionSchemas = sectionComponents
       .map((section: any) => {
         if (section.Schema && typeof section.Schema === 'function') {
-          return section.Schema({...staticProps});
+          return section.Schema({...data});
         }
 
         return section.Schema;
@@ -38,7 +39,7 @@ export const useCustomizerShell = ({
         // parentConnection.displayError('Something went wrong parsing sections');
       }
     }
-  }, [staticProps, parentConnection, sectionComponents]);
+  }, [data, parentConnection, sectionComponents]);
 
   const refreshStorefrontSettingsSchema = useCallback(() => {
     if (!storefrontSettingsSchema) return [];
@@ -53,9 +54,11 @@ export const useCustomizerShell = ({
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [staticProps, parentConnection, storefrontSettingsSchema]);
+  }, [data, parentConnection, storefrontSettingsSchema]);
 
   useEffect(() => {
+    if (!isPreview) return;
+
     const connection = connectToParent({
       // Methods child is exposing to parent.
       methods: {
@@ -86,11 +89,11 @@ export const useCustomizerShell = ({
       const currentRoute = {
         environment,
         currentPath: location.pathname,
-        template: staticProps?.template,
-        templateType: staticProps?.templateType,
-        handle: staticProps?.page.handle,
-        title: staticProps?.page.title,
-        description: staticProps?.page.description,
+        template: data?.template,
+        templateType: data?.templateType,
+        handle: data?.page.handle,
+        title: data?.page.title,
+        description: data?.page.description,
       };
 
       parent.setCurrentRoute(currentRoute);
@@ -99,10 +102,12 @@ export const useCustomizerShell = ({
   }, []);
 
   useEffect(() => {
+    if (!isPreview) return;
     refreshSections();
     refreshStorefrontSettingsSchema();
   }, [
-    staticProps,
+    data,
+    isPreview,
     refreshSections,
     refreshStorefrontSettingsSchema,
     sectionComponents,
@@ -111,8 +116,8 @@ export const useCustomizerShell = ({
   // Not in preview: Return Static Data
   if (!isPreview) {
     return {
-      pageData: staticProps.page || staticProps.blog || staticProps.article,
-      storefrontSettings: staticProps?.settings?.settings,
+      pageData: data.page || data.blog || data.article,
+      storefrontSettings: data?.settings?.settings,
     };
   }
 

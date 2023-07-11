@@ -1,5 +1,5 @@
 import {CacheLong, createWithCache_unstable} from '@shopify/hydrogen';
-import {PreviewSession} from './preview-session';
+import {PreviewSession} from './preview/preview-session';
 
 /** @see https://shopify.dev/docs/custom-storefronts/hydrogen/data-fetching/cache#caching-strategies */
 type CachingStrategy = ReturnType<typeof CacheLong>;
@@ -37,6 +37,7 @@ interface QueryOptions {
 }
 
 export interface Pack {
+  isPreviewModeEnabled: () => boolean;
   preview?: {session: PreviewSession};
   query: <T = any>(query: string, options?: QueryOptions) => Promise<T>;
 }
@@ -114,6 +115,7 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
 
   return {
     preview,
+    isPreviewModeEnabled: () => preview && preview.session.get('enabled'),
     async query<T = any>(
       query: string,
       {variables, cache: strategy = CacheLong()}: QueryOptions = {},

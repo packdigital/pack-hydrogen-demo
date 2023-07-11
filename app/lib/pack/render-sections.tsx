@@ -1,6 +1,7 @@
 import {v4 as uuidv4} from 'uuid';
 import sections from '~/sections';
 import {useCustomizerShell} from './useCustomizerShell';
+import {usePreviewContext} from '~/lib/pack/preview/PreviewContent';
 
 function Sections({pageData, pageSections}: any) {
   const componentMap =
@@ -47,11 +48,13 @@ function Sections({pageData, pageSections}: any) {
 }
 
 export function RenderSections({pageData}: any) {
+  const preview = usePreviewContext();
+
   const {pageData: livePageData, storefrontSettings} = useCustomizerShell({
     environment: 'production',
-    isPreview: true,
+    isPreview: preview,
     sectionComponents: sections,
-    staticProps: {
+    data: {
       page: pageData,
       template: pageData.template?.type,
       templateType: pageData.template?.type,
