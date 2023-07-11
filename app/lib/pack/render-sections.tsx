@@ -13,9 +13,7 @@ function Sections({pageData, pageSections}: any) {
         schemaKey = Component.Schema?.key;
       }
 
-      if (!schemaKey) {
-        return compMap;
-      }
+      if (!schemaKey) return compMap;
 
       compMap[schemaKey] = Component;
 
@@ -27,19 +25,19 @@ function Sections({pageData, pageSections}: any) {
       // TODO: Return a consistent data structure from the API and the customizer
       // Normalize section data
       const data = section.data || section;
-      const CompSchemaKey = data._template;
-      const Comp = componentMap[CompSchemaKey];
+      const schemaKey = data._template;
+      const Component = componentMap[schemaKey];
 
-      if (!Comp) return null;
+      if (!Component) return null;
 
       return (
         <section
           key={uuidv4()}
-          data-comp={CompSchemaKey}
+          data-comp={schemaKey}
           data-comp-id={section?.id}
           hidden={data?.sectionVisibility === 'hidden'}
         >
-          <Comp comp-name={CompSchemaKey} cms={data} />
+          <Component comp-name={schemaKey} cms={data} />
         </section>
       );
     })
