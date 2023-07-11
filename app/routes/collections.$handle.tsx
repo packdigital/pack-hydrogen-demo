@@ -1,6 +1,7 @@
 import {useLoaderData} from '@remix-run/react';
 import {LoaderArgs, json} from '@shopify/remix-oxygen';
 import ProductGrid from '~/components/ProductGrid';
+import {RenderSections} from '~/lib/pack/render-sections';
 
 const seo = ({data}: any) => {
   return {
@@ -49,7 +50,7 @@ export function meta({data}: any) {
 }
 
 export default function Collection() {
-  const {collection} = useLoaderData();
+  const {collection, collectionPage} = useLoaderData();
 
   return (
     <>
@@ -68,6 +69,8 @@ export default function Collection() {
           </div>
         )}
       </header>
+
+      <RenderSections pageData={collectionPage} />
       <ProductGrid
         collection={collection}
         url={`/collections/${collection.handle}`}
@@ -107,6 +110,12 @@ const COLLECTION_PAGE_QUERY = `#graphql
       }
       template {
         id
+        title
+        type
+        status
+        publishedAt
+        createdAt
+        updatedAt
       }
       publishedAt
       createdAt

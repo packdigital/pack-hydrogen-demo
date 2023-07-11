@@ -2,6 +2,7 @@ import {useLoaderData} from '@remix-run/react';
 import {LoaderArgs, json} from '@shopify/remix-oxygen';
 import {MediaFile, Money, ShopPayButton} from '@shopify/hydrogen';
 import ProductOptions from '~/components/ProductOptions';
+import {RenderSections} from '~/lib/pack/render-sections';
 
 export async function loader({params, context, request}: LoaderArgs) {
   const {handle} = params;
@@ -83,6 +84,8 @@ export default function ProductHandle() {
           ></div>
         </div>
       </div>
+
+      <RenderSections pageData={productPage} />
     </section>
   );
 }
@@ -146,132 +149,138 @@ function ProductGallery({media}: any) {
 }
 
 const SECTION_FRAGMENT = `#graphql
-  fragment section on Section {
-    id
-    title
-    status
-    data
-    publishedAt
-    createdAt
-    updatedAt
-    parentContentType
-  }
+fragment section on Section {
+  id
+  title
+  status
+  data
+  publishedAt
+  createdAt
+  updatedAt
+  parentContentType
+}
 `;
 
 const PRODUCT_PAGE_QUERY = `#graphql
-  query ProductPage($handle: String!) {
-    productPage: productPageByHandle(handle: $handle) {
+query ProductPage($handle: String!) {
+  productPage: productPageByHandle(handle: $handle) {
+    id
+    title
+    handle
+    description
+    status
+    sections(first: 25) {
+      nodes {
+        ...section
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+    template {
       id
       title
-      handle
-      description
+      type
       status
-      sections(first: 25) {
-        nodes {
-          ...section
-        }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-      }
-      template {
-        id
-      }
       publishedAt
       createdAt
       updatedAt
     }
+    publishedAt
+    createdAt
+    updatedAt
   }
-  ${SECTION_FRAGMENT}
+}
+${SECTION_FRAGMENT}
 `;
 
 const PRODUCT_QUERY = `#graphql
-  query product($handle: String!, $selectedOptions: [SelectedOptionInput!]!) {
-    product(handle: $handle) {
-      id
-      title
-      handle
-      vendor
-      descriptionHtml
-      media(first: 10) {
-        nodes {
-          ... on MediaImage {
-            mediaContentType
-            image {
-              id
-              url
-              altText
-              width
-              height
-            }
-          }
-          ... on Model3d {
+query product($handle: String!, $selectedOptions: [SelectedOptionInput!]!) {
+  product(handle: $handle) {
+    id
+    title
+    handle
+    vendor
+    descriptionHtml
+    media(first: 10) {
+      nodes {
+        ... on MediaImage {
+          mediaContentType
+          image {
             id
-            mediaContentType
-            sources {
-              mimeType
-              url
-            }
+            url
+            altText
+            width
+            height
           }
         }
-      }
-      options {
-        name,
-        values
-      }
-      selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {
-        id
-        availableForSale
-        selectedOptions {
-          name
-          value
-        }
-        image {
+        ... on Model3d {
           id
-          url
-          altText
-          width
-          height
-        }
-        price {
-          amount
-          currencyCode
-        }
-        compareAtPrice {
-          amount
-          currencyCode
-        }
-        sku
-        title
-        unitPrice {
-          amount
-          currencyCode
-        }
-        product {
-          title
-          handle
-        }
-      }
-      variants(first: 1) {
-        nodes {
-          id
-          title
-          availableForSale
-          price {
-            currencyCode
-            amount
-          }
-          compareAtPrice {
-            currencyCode
-            amount
-          }
-          selectedOptions {
-            name
-            value
+          mediaContentType
+          sources {
+            mimeType
+            url
           }
         }
       }
     }
+    options {
+      name,
+      values
+    }
+    selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {
+      id
+      availableForSale
+      selectedOptions {
+        name
+        value
+      }
+      image {
+        id
+        url
+        altText
+        width
+        height
+      }
+      price {
+        amount
+        currencyCode
+      }
+      compareAtPrice {
+        amount
+        currencyCode
+      }
+      sku
+      title
+      unitPrice {
+        amount
+        currencyCode
+      }
+      product {
+        title
+        handle
+      }
+    }
+    variants(first: 1) {
+      nodes {
+        id
+        title
+        availableForSale
+        price {
+          currencyCode
+          amount
+        }
+        compareAtPrice {
+          currencyCode
+          amount
+        }
+        selectedOptions {
+          name
+          value
+        }
+      }
+    }
   }
+}
 `;

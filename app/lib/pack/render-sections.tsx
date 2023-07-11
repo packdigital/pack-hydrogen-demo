@@ -1,6 +1,7 @@
 'use client';
 import {v4 as uuidv4} from 'uuid';
 import sections from '~/sections';
+import {useCustomizerShell} from './useCustomizerShell';
 
 function Sections({pageData, pageSections}: any) {
   const componentMap =
@@ -24,7 +25,9 @@ function Sections({pageData, pageSections}: any) {
 
   const renderedSections = pageSections
     .map((section: any) => {
-      const {data} = section;
+      // TODO: Return a consistent data structure from the API and the customizer
+      // Normalize section data
+      const data = section.data || section;
       const CompSchemaKey = data._template;
       const Comp = componentMap[CompSchemaKey];
 
@@ -47,11 +50,25 @@ function Sections({pageData, pageSections}: any) {
 }
 
 export function RenderSections({pageData}: any) {
-  const pageDataSections = pageData?.sections?.nodes;
+  const {pageData: livePageData, storefrontSettings} = useCustomizerShell({
+    environment: 'production',
+    isPreview: true,
+    sectionComponents: sections,
+    staticProps: {
+      page: pageData,
+      template: pageData.template?.type,
+      templateType: pageData.template?.type,
+      handle: pageData.handle,
+      title: pageData.title,
+      description: pageData.description,
+    },
+    storefrontSettingsSchema: {},
+  });
 
-  if (!pageDataSections) {
-    return null;
-  }
+  const pageDataSections =
+    livePageData?.sections?.nodes || livePageData?.sections;
 
-  return <Sections pageData={pageData} pageSections={pageDataSections} />;
+  if (!pageDataSections) return null;
+
+  return <Sections pageData={livePageData} pageSections={pageDataSections} />;
 }
