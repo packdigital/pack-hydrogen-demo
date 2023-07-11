@@ -1,4 +1,4 @@
-import {LoaderArgs, json} from '@shopify/remix-oxygen';
+import {LoaderArgs} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
 import {RenderSections} from '~/lib/pack';
 

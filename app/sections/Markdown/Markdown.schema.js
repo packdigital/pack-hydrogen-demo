@@ -53,7 +53,7 @@ export function Schema() {
                 label: 'Wide',
                 value: 'max-w-[90rem]',
               },
-              { label: 'Full', value: 'max-w-full' },
+              {label: 'Full', value: 'max-w-full'},
             ],
           },
         ],
