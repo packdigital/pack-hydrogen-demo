@@ -29,7 +29,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
-  // optionally set a default variant so you always have an "orderable" product selected
+  // optionally set a default variant, so you always have an "orderable" product selected
   const selectedVariant =
     product.selectedVariant ?? product?.variants?.nodes[0];
 
