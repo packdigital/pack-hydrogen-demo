@@ -9,6 +9,7 @@ import {
   type Session,
 } from '@shopify/remix-oxygen';
 import {createPackClient} from '~/lib/pack/create-pack-client';
+import {PreviewSession} from '~/lib/pack/preview-session';
 
 /**
  * Export a fetch handler in module format.
@@ -28,9 +29,10 @@ export default {
       }
 
       const waitUntil = (p: Promise<any>) => executionContext.waitUntil(p);
-      const [cache, session] = await Promise.all([
+      const [cache, session, previewSession] = await Promise.all([
         caches.open('hydrogen'),
         HydrogenSession.init(request, [env.SESSION_SECRET]),
+        PreviewSession.init(request, [env.SESSION_SECRET]),
       ]);
 
       /**
@@ -50,7 +52,8 @@ export default {
       const pack = createPackClient({
         cache,
         waitUntil,
-        secretToken: env.PACK_SECRET_TOKEN,
+        token: env.PACK_SECRET_TOKEN,
+        preview: {session: previewSession},
       });
 
       /**

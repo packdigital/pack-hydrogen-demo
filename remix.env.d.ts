@@ -21,6 +21,7 @@ declare global {
     PRIVATE_STOREFRONT_API_TOKEN: string;
     PUBLIC_STORE_DOMAIN: string;
     PUBLIC_STOREFRONT_ID: string;
+    PACK_PUBLIC_TOKEN: string;
     PACK_SECRET_TOKEN: string;
   }
 }

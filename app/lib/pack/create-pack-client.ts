@@ -1,4 +1,5 @@
 import {CacheLong, createWithCache_unstable} from '@shopify/hydrogen';
+import {PreviewSession} from './preview-session';
 
 /** @see https://shopify.dev/docs/custom-storefronts/hydrogen/data-fetching/cache#caching-strategies */
 type CachingStrategy = ReturnType<typeof CacheLong>;
@@ -17,15 +18,17 @@ interface EnvironmentOptions {
 }
 
 interface CreatePackClientOptions extends EnvironmentOptions {
-  secretToken: string;
+  token: string;
+  preview?: {session: PreviewSession};
 }
 
 type Variables = Record<string, any>;
 
 interface PackFetchOptions {
-  secretToken: string;
+  token: string;
   query: string;
   variables?: Variables;
+  preview?: {session: PreviewSession};
 }
 
 interface QueryOptions {
@@ -34,6 +37,7 @@ interface QueryOptions {
 }
 
 export interface Pack {
+  preview?: {session: PreviewSession};
   query: <T = any>(query: string, options?: QueryOptions) => Promise<T>;
 }
 
@@ -58,28 +62,38 @@ async function sha256(message: string): Promise<string> {
  */
 function hashQuery(query: string, variables?: Variables): Promise<string> {
   let hash = query;
-
-  if (variables !== null) {
-    hash += JSON.stringify(variables);
-  }
+  if (variables !== null) hash += JSON.stringify(variables);
 
   return sha256(hash);
 }
 
 async function packFetch<T = any>({
-  secretToken,
+  token,
   query,
   variables,
+  preview,
 }: PackFetchOptions): Promise<T> {
-  const url = `https://app.packdigital.com/graphql`;
+  // const url = `https://app.packdigital.com/graphql`;
+  // const url = `https://pack.stellate.sh`;
+  const url = 'http://localhost:3030/graphql';
+
+  const previewEnabled = preview && preview.session.get('enabled');
+
+  const queryVariables = variables || {};
+  if (previewEnabled) {
+    queryVariables.version = 'CURRENT';
+  } else {
+    queryVariables.version = 'PUBLISHED';
+  }
+
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${secretToken}`,
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({query, ...(variables && {variables})}),
+    body: JSON.stringify({query, variables: queryVariables}),
   });
 
   if (!response.ok) {
@@ -96,9 +110,10 @@ async function packFetch<T = any>({
 }
 
 export function createPackClient(options: CreatePackClientOptions): Pack {
-  const {cache, waitUntil} = options;
+  const {cache, waitUntil, preview} = options;
 
   return {
+    preview,
     async query<T = any>(
       query: string,
       {variables, cache: strategy = CacheLong()}: QueryOptions = {},
@@ -106,8 +121,13 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
       const queryHash = await hashQuery(query, variables);
       const withCache = createWithCache_unstable<T>({cache, waitUntil});
 
+      // Preview mode always bypasses the cache
+      if (preview && preview.session.get('enabled')) {
+        return packFetch<T>({query, variables, token: options.token, preview});
+      }
+
       return withCache(queryHash, strategy, () =>
-        packFetch<T>({query, variables, secretToken: options.secretToken}),
+        packFetch<T>({query, variables, token: options.token, preview}),
       );
     },
   };
