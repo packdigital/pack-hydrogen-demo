@@ -74,10 +74,7 @@ async function packFetch<T = any>({
   variables,
   preview,
 }: PackFetchOptions): Promise<T> {
-  // const url = `https://app.packdigital.com/graphql`;
-  // const url = `https://pack.stellate.sh`;
-  const url = 'http://localhost:3030/graphql';
-
+  const url = `https://app.packdigital.com/graphql`;
   const previewEnabled = preview && preview.session.get('enabled');
 
   const queryVariables = variables || {};

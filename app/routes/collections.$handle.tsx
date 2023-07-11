@@ -91,8 +91,8 @@ fragment section on Section {
 `;
 
 const COLLECTION_PAGE_QUERY = `#graphql
-query CollectionPage($handle: String!) {
-  collectionPage: collectionPageByHandle(handle: $handle) {
+query CollectionPage($handle: String!, $version: Version) {
+  collectionPage: collectionPageByHandle(handle: $handle, version: $version) {
     id
     title
     handle

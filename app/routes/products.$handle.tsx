@@ -162,8 +162,8 @@ fragment section on Section {
 `;
 
 const PRODUCT_PAGE_QUERY = `#graphql
-query ProductPage($handle: String!) {
-  productPage: productPageByHandle(handle: $handle) {
+query ProductPage($handle: String!, $version: Version) {
+  productPage: productPageByHandle(handle: $handle, version: $version) {
     id
     title
     handle

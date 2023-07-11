@@ -1,7 +1,6 @@
 import {useCallback, useEffect, useState} from 'react';
 import {useLocation, useNavigate} from '@remix-run/react';
 import {connectToParent} from 'penpal';
-import {preview} from 'vite';
 
 export const useCustomizerShell = ({
   environment = 'production',
@@ -13,7 +12,7 @@ export const useCustomizerShell = ({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [pageData, setPageData] = useState<any>(null);
+  const [pageData, setPageData] = useState<any>(data.page);
   const [storefrontSettings, setStorefrontSettings] = useState<any>(null);
   const [parentConnection, setParentConnection] = useState<any>(null);
 
