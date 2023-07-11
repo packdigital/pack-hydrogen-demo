@@ -1,5 +1,5 @@
 import {useLoaderData} from '@remix-run/react';
-import {LoaderArgs, json} from '@shopify/remix-oxygen';
+import {LoaderArgs} from '@shopify/remix-oxygen';
 import ProductGrid from '~/components/ProductGrid';
 import {RenderSections} from '~/lib/pack';
 
@@ -34,12 +34,10 @@ export async function loader({params, context, request}: LoaderArgs) {
     throw new Response(null, {status: 404});
   }
 
-  // json is a Remix utility for creating application/json responses
-  // https://remix.run/docs/en/v1/utils/json
-  return json({
+  return {
     collectionPage,
     collection,
-  });
+  };
 }
 
 export function meta({data}: any) {

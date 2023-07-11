@@ -6,7 +6,7 @@ export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
   const {blog} = await context.pack.query(BLOG_QUERY, {variables: {handle}});
 
-  return json({blog});
+  return {blog};
 }
 
 export default function Blog() {

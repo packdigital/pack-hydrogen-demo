@@ -1,4 +1,4 @@
-import {LoaderArgs, json} from '@shopify/remix-oxygen';
+import {LoaderArgs} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
 import {RenderSections} from '~/lib/pack';
 
@@ -6,7 +6,7 @@ export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
   const {page} = await context.pack.query(PAGE_QUERY, {variables: {handle}});
 
-  return json({page});
+  return {page};
 }
 
 export default function Page() {

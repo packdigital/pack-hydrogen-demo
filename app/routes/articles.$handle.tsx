@@ -8,7 +8,7 @@ export async function loader({params, context}: LoaderArgs) {
     variables: {handle},
   });
 
-  return json({article});
+  return {article};
 }
 
 export default function Article() {
