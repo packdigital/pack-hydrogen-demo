@@ -1,7 +1,7 @@
 import {useLoaderData, Link} from '@remix-run/react';
 import {LoaderArgs} from '@shopify/remix-oxygen';
 import {Image} from '@shopify/hydrogen';
-import {RenderSections} from '~/lib/pack/render-sections';
+import {RenderSections} from '~/lib/pack';
 
 export function meta() {
   return [
@@ -59,74 +59,74 @@ export default function Index() {
 }
 
 const SECTION_FRAGMENT = `#graphql
-  fragment section on Section {
-    id
-    title
-    status
-    data
-    publishedAt
-    createdAt
-    updatedAt
-    parentContentType
-  }
+fragment section on Section {
+  id
+  title
+  status
+  data
+  publishedAt
+  createdAt
+  updatedAt
+  parentContentType
+}
 `;
 
 const HOME_PAGE_QUERY = `#graphql
-  query HomePage($version: Version, $cursor: String) {
-    page: pageByHandle(handle: "/", version: $version) {
+query HomePage($version: Version, $cursor: String) {
+  page: pageByHandle(handle: "/", version: $version) {
+    id
+    title
+    handle
+    description
+    status
+    seo {
+      title
+      description
+      image
+      keywords
+      noFollow
+      noIndex
+    }
+    sections(first: 25, after: $cursor) {
+      nodes {
+        ...section
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+    template {
       id
       title
-      handle
-      description
+      type
       status
-      seo {
-        title
-        description
-        image
-        keywords
-        noFollow
-        noIndex
-      }
-      sections(first: 25, after: $cursor) {
-        nodes {
-          ...section
-        }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-      }
-      template {
-        id
-        title
-        type
-        status
-        publishedAt
-        createdAt
-        updatedAt
-      }
       publishedAt
       createdAt
       updatedAt
     }
+    publishedAt
+    createdAt
+    updatedAt
   }
-  ${SECTION_FRAGMENT}
+}
+${SECTION_FRAGMENT}
 `;
 
 const COLLECTIONS_QUERY = `#graphql
-  query FeaturedCollections {
-    collections(first: 3, query: "collection_type:smart")  {
-      nodes {
-        id
-        title
-        handle
-        image {
-          altText
-          width
-          height
-          url
-        }
+query FeaturedCollections {
+  collections(first: 3, query: "collection_type:smart")  {
+    nodes {
+      id
+      title
+      handle
+      image {
+        altText
+        width
+        height
+        url
       }
     }
   }
+}
 `;

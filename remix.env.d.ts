@@ -3,7 +3,7 @@
 /// <reference types="@shopify/oxygen-workers-types" />
 
 import type {Storefront} from '@shopify/hydrogen';
-import type {Pack} from '~/lib/pack/create-pack-client';
+import type {Pack} from '~/lib/pack';
 import type {HydrogenSession} from './server';
 
 declare global {

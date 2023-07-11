@@ -2,7 +2,7 @@ import {useLoaderData} from '@remix-run/react';
 import {LoaderArgs, json} from '@shopify/remix-oxygen';
 import {MediaFile, Money, ShopPayButton} from '@shopify/hydrogen';
 import ProductOptions from '~/components/ProductOptions';
-import {RenderSections} from '~/lib/pack/render-sections';
+import {RenderSections} from '~/lib/pack';
 
 export async function loader({params, context, request}: LoaderArgs) {
   const {handle} = params;

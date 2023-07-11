@@ -1,7 +1,7 @@
 import {useLoaderData} from '@remix-run/react';
 import {LoaderArgs, json} from '@shopify/remix-oxygen';
 import ProductGrid from '~/components/ProductGrid';
-import {RenderSections} from '~/lib/pack/render-sections';
+import {RenderSections} from '~/lib/pack';
 
 const seo = ({data}: any) => {
   return {
@@ -80,89 +80,89 @@ export default function Collection() {
 }
 
 const SECTION_FRAGMENT = `#graphql
-  fragment section on Section {
-    id
-    title
-    status
-    data
-    publishedAt
-    createdAt
-    updatedAt
-    parentContentType
-  }
+fragment section on Section {
+  id
+  title
+  status
+  data
+  publishedAt
+  createdAt
+  updatedAt
+  parentContentType
+}
 `;
 
 const COLLECTION_PAGE_QUERY = `#graphql
-  query CollectionPage($handle: String!) {
-    collectionPage: collectionPageByHandle(handle: $handle) {
+query CollectionPage($handle: String!) {
+  collectionPage: collectionPageByHandle(handle: $handle) {
+    id
+    title
+    handle
+    status
+    sections(first: 25) {
+      nodes {
+        ...section
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+    template {
       id
       title
-      handle
+      type
       status
-      sections(first: 25) {
-        nodes {
-          ...section
-        }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-      }
-      template {
-        id
-        title
-        type
-        status
-        publishedAt
-        createdAt
-        updatedAt
-      }
       publishedAt
       createdAt
       updatedAt
     }
+    publishedAt
+    createdAt
+    updatedAt
   }
-  ${SECTION_FRAGMENT}
+}
+${SECTION_FRAGMENT}
 `;
 
 const COLLECTION_QUERY = `#graphql
-  query CollectionDetails($handle: String!, $cursor: String) {
-    collection(handle: $handle) {
-      id
-      title
-      description
-      handle
-      products(first: 4, after: $cursor) {
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-        nodes {
-          id
-          title
-          publishedAt
-          handle
-          variants(first: 1) {
-            nodes {
-              id
-              image {
-                url
-                altText
-                width
-                height
-              }
-              price {
-                amount
-                currencyCode
-              }
-              compareAtPrice {
-                amount
-                currencyCode
-              }
+query CollectionDetails($handle: String!, $cursor: String) {
+  collection(handle: $handle) {
+    id
+    title
+    description
+    handle
+    products(first: 4, after: $cursor) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
+        id
+        title
+        publishedAt
+        handle
+        variants(first: 1) {
+          nodes {
+            id
+            image {
+              url
+              altText
+              width
+              height
+            }
+            price {
+              amount
+              currencyCode
+            }
+            compareAtPrice {
+              amount
+              currencyCode
             }
           }
         }
       }
     }
   }
+}
 `;

@@ -8,8 +8,7 @@ import {
   type SessionStorage,
   type Session,
 } from '@shopify/remix-oxygen';
-import {createPackClient} from '~/lib/pack/create-pack-client';
-import {PreviewSession} from '~/lib/pack/preview-session';
+import {createPackClient, PreviewSession} from '~/lib/pack';
 
 /**
  * Export a fetch handler in module format.

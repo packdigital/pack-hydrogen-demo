@@ -1,6 +1,6 @@
 import {LoaderArgs, json} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
-import {RenderSections} from '~/lib/pack/render-sections';
+import {RenderSections} from '~/lib/pack';
 
 export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
