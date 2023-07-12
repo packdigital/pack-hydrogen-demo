@@ -29,6 +29,17 @@ npm create @shopify/hydrogen@latest -- --template hello-world
 
 Remember to update `.env` with your shop's domain and Storefront API token!
 
+**ENV**
+```
+# These variables are only available locally in MiniOxygen
+
+SESSION_SECRET="foobar"
+PUBLIC_STOREFRONT_API_TOKEN="xxx"
+PUBLIC_STORE_DOMAIN="xxx"
+PACK_PUBLIC_TOKEN="xxx"
+PACK_SECRET_TOKEN="xxx"
+```
+
 ## Building for production
 
 ```bash
