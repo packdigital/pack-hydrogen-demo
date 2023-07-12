@@ -9,7 +9,7 @@ import {
   useMatches,
   useRouteError,
 } from '@remix-run/react';
-import {Seo} from '@shopify/hydrogen';
+import {Seo, ShopifySalesChannel, useShopifyCookies} from '@shopify/hydrogen';
 import {DEFAULT_LOCALE} from './lib/utils';
 import styles from './styles/app.css';
 import favicon from '../public/favicon.svg';
@@ -18,6 +18,7 @@ import {NotFound} from './components/NotFound';
 import {GenericError} from './components/GenericError';
 import {LoaderArgs} from '@shopify/remix-oxygen';
 import {PreviewProvider} from '~/lib/pack';
+import {useAnalytics} from '~/hooks/useAnalytics';
 
 export const links = () => {
   return [
@@ -37,12 +38,22 @@ export const links = () => {
 export async function loader({context}: LoaderArgs) {
   const isPreviewModeEnabled = await context.pack.isPreviewModeEnabled();
   const layout = await context.storefront.query(LAYOUT_QUERY);
-  return {layout, isPreviewModeEnabled};
+
+  const analytics = {
+    shopifySalesChannel: ShopifySalesChannel.hydrogen,
+    shopId: layout.shop.id,
+  };
+
+  return {layout, isPreviewModeEnabled, analytics};
 }
 
 export default function App() {
+  const hasUserConsent = true;
   const {layout, isPreviewModeEnabled} = useLoaderData();
   const {name} = layout.shop;
+
+  useShopifyCookies({hasUserConsent});
+  useAnalytics(hasUserConsent, DEFAULT_LOCALE);
 
   return (
     <html lang="en">
@@ -114,6 +125,7 @@ export function ErrorBoundary({error}: {error: Error}) {
 const LAYOUT_QUERY = `#graphql
 query layout {
   shop {
+    id
     name
     description
   }

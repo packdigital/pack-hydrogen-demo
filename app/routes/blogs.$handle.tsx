@@ -1,12 +1,15 @@
 import {LoaderArgs} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
 import {RenderSections} from '~/lib/pack';
+import {AnalyticsPageType} from '@shopify/hydrogen';
+import {defer} from '@shopify/remix-oxygen';
 
 export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
   const {blog} = await context.pack.query(BLOG_QUERY, {variables: {handle}});
+  const analytics = {pageType: AnalyticsPageType.blog};
 
-  return {blog};
+  return defer({blog, analytics});
 }
 
 export default function Blog() {

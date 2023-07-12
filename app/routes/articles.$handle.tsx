@@ -1,6 +1,7 @@
-import {LoaderArgs} from '@shopify/remix-oxygen';
+import {defer, LoaderArgs} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
 import {RenderSections} from '~/lib/pack';
+import {AnalyticsPageType} from '@shopify/hydrogen';
 
 export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
@@ -8,7 +9,9 @@ export async function loader({params, context}: LoaderArgs) {
     variables: {handle},
   });
 
-  return {article};
+  const analytics = {pageType: AnalyticsPageType.article};
+
+  return defer({article, analytics});
 }
 
 export default function Article() {

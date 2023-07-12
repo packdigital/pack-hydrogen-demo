@@ -1,7 +1,8 @@
 import {useLoaderData} from '@remix-run/react';
-import {LoaderArgs} from '@shopify/remix-oxygen';
+import {defer, LoaderArgs} from '@shopify/remix-oxygen';
 import ProductGrid from '~/components/ProductGrid';
 import {RenderSections} from '~/lib/pack';
+import {AnalyticsPageType} from '@shopify/hydrogen';
 
 const seo = ({data}: any) => {
   return {
@@ -34,10 +35,17 @@ export async function loader({params, context, request}: LoaderArgs) {
     throw new Response(null, {status: 404});
   }
 
-  return {
+  const analytics = {
+    pageType: AnalyticsPageType.collection,
+    handle,
+    resourceId: collection.id,
+  };
+
+  return defer({
     collectionPage,
     collection,
-  };
+    analytics,
+  });
 }
 
 export function meta({data}: any) {

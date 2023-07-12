@@ -1,6 +1,12 @@
 import {useLoaderData} from '@remix-run/react';
-import {LoaderArgs} from '@shopify/remix-oxygen';
-import {MediaFile, Money, ShopPayButton} from '@shopify/hydrogen';
+import {defer, LoaderArgs} from '@shopify/remix-oxygen';
+import {
+  AnalyticsPageType,
+  MediaFile,
+  Money,
+  ShopifyAnalyticsProduct,
+  ShopPayButton,
+} from '@shopify/hydrogen';
 import ProductOptions from '~/components/ProductOptions';
 import {RenderSections} from '~/lib/pack';
 
@@ -33,7 +39,22 @@ export async function loader({params, context, request}: LoaderArgs) {
   const selectedVariant =
     product.selectedVariant ?? product?.variants?.nodes[0];
 
-  return {product, productPage, selectedVariant, storeDomain};
+  const productAnalytics: ShopifyAnalyticsProduct = {
+    productGid: product.id,
+    variantGid: selectedVariant.id,
+    name: product.title,
+    variantName: selectedVariant.title,
+    brand: product.vendor,
+    price: selectedVariant.price.amount,
+  };
+  const analytics = {
+    pageType: AnalyticsPageType.product,
+    resourceId: product.id,
+    products: [productAnalytics],
+    totalValue: parseFloat(selectedVariant.price.amount),
+  };
+
+  return defer({product, productPage, selectedVariant, storeDomain, analytics});
 }
 
 export default function ProductHandle() {

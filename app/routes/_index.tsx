@@ -1,6 +1,6 @@
 import {useLoaderData, Link} from '@remix-run/react';
-import {LoaderArgs} from '@shopify/remix-oxygen';
-import {Image} from '@shopify/hydrogen';
+import {defer, LoaderArgs} from '@shopify/remix-oxygen';
+import {AnalyticsPageType, Image} from '@shopify/hydrogen';
 import {RenderSections} from '~/lib/pack';
 
 export function meta() {
@@ -13,11 +13,13 @@ export function meta() {
 export async function loader({context}: LoaderArgs) {
   const {page} = await context.pack.query(HOME_PAGE_QUERY);
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY);
+  const analytics = {pageType: AnalyticsPageType.home};
 
-  return {
+  return defer({
     page,
     collections,
-  };
+    analytics,
+  });
 }
 
 export default function Index() {
