@@ -16,7 +16,7 @@ export default function Page() {
 
   return (
     <div>
-      <RenderSections pageData={page} />
+      <RenderSections content={page} />
     </div>
   );
 }

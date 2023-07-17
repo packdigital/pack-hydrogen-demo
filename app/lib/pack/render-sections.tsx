@@ -1,15 +1,15 @@
 import {v4 as uuidv4} from 'uuid';
-import sections from '~/sections';
+import sectionComponents from '~/sections';
 import {useCustomizerShell} from './useCustomizerShell';
 import {usePreviewContext} from '~/lib/pack/preview/PreviewContent';
 
-function Sections({pageData, pageSections}: any) {
+function Sections({content, sections}: any) {
   const componentMap =
-    sections?.reduce((compMap: any, Component: any) => {
+    sectionComponents?.reduce((compMap: any, Component: any) => {
       let schemaKey;
 
       if (Component?.Schema && typeof Component?.Schema === 'function') {
-        schemaKey = Component.Schema(pageData)?.key;
+        schemaKey = Component.Schema(content)?.key;
       } else {
         schemaKey = Component.Schema?.key;
       }
@@ -21,7 +21,7 @@ function Sections({pageData, pageSections}: any) {
       return compMap;
     }, {}) || {};
 
-  const renderedSections = pageSections
+  const renderedSections = sections
     .map((section: any) => {
       // TODO: Return a consistent data structure from the API and the customizer
       // Normalize section data
@@ -47,28 +47,27 @@ function Sections({pageData, pageSections}: any) {
   return <>{renderedSections}</>;
 }
 
-export function RenderSections({pageData}: any) {
+export function RenderSections({content}: any) {
   const preview = usePreviewContext();
 
-  const {pageData: livePageData, storefrontSettings} = useCustomizerShell({
+  const {content: liveContent, storefrontSettings} = useCustomizerShell({
     environment: 'production',
     isPreview: preview,
-    sectionComponents: sections,
+    sectionComponents,
     data: {
-      page: pageData,
-      template: pageData.template?.type,
-      templateType: pageData.template?.type,
-      handle: pageData.handle,
-      title: pageData.title,
-      description: pageData.description,
+      content,
+      template: content.template?.type,
+      templateType: content.template?.type,
+      handle: content.handle,
+      title: content.title,
+      description: content.description,
     },
     storefrontSettingsSchema: {},
   });
 
-  const pageDataSections =
-    livePageData?.sections?.nodes || livePageData?.sections;
+  const sections = liveContent?.sections?.nodes || liveContent?.sections;
 
-  if (!pageDataSections) return null;
+  if (!sections) return null;
 
-  return <Sections pageData={livePageData} pageSections={pageDataSections} />;
+  return <Sections content={liveContent} sections={sections} />;
 }

@@ -19,7 +19,7 @@ export default function Article() {
 
   return (
     <div>
-      <RenderSections pageData={article} />
+      <RenderSections content={article} />
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default function Blog() {
 
   return (
     <div>
-      <RenderSections pageData={blog} />
+      <RenderSections content={blog} />
     </div>
   );
 }

@@ -106,7 +106,7 @@ export default function ProductHandle() {
         </div>
       </div>
 
-      <RenderSections pageData={productPage} />
+      <RenderSections content={productPage} />
     </section>
   );
 }

@@ -6,13 +6,13 @@ export const useCustomizerShell = ({
   environment = 'production',
   isPreview,
   sectionComponents,
-  data,
+  data = {},
   storefrontSettingsSchema,
 }: any) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [pageData, setPageData] = useState<any>(data.page);
+  const [content, setContent] = useState<any>(data.content);
   const [storefrontSettings, setStorefrontSettings] = useState<any>(null);
   const [parentConnection, setParentConnection] = useState<any>(null);
 
@@ -61,41 +61,37 @@ export const useCustomizerShell = ({
     const connection = connectToParent({
       // Methods child is exposing to parent.
       methods: {
-        routeToPage: (path: string) => {
+        routeToPage(path: string) {
           navigate(path);
-          // Router.push(path);
         },
-
-        scrollToSection: (sectionId: string) => {
+        scrollToSection(sectionId: string) {
           const sectionEl = document.querySelector(
             `[data-comp-id="${sectionId}"]`,
           );
 
           if (sectionEl) sectionEl.scrollIntoView({behavior: 'smooth'});
         },
-
-        //This is the live form data from the shell that will be used to render the page.
-        setPageData: (content: any) => setPageData(content),
-
-        // This is the live storefront settings from the shell that will be used to render the page
-        setStorefrontSettings: (settings: any) => {
+        setPageData(content: any) {
+          setContent(content);
+        },
+        setStorefrontSettings(settings: any) {
           setStorefrontSettings(settings);
         },
       },
     });
 
     connection.promise.then((parent: any) => {
-      const currentRoute = {
+      const {template, templateType, content} = data;
+
+      parent.setCurrentRoute({
         environment,
         currentPath: location.pathname,
-        template: data?.template,
-        templateType: data?.templateType,
-        handle: data?.page.handle,
-        title: data?.page.title,
-        description: data?.page.description,
-      };
-
-      parent.setCurrentRoute(currentRoute);
+        template,
+        templateType,
+        handle: content.handle,
+        title: content.title,
+        description: content.description,
+      });
       setParentConnection(parent);
     });
   }, []);
@@ -115,10 +111,10 @@ export const useCustomizerShell = ({
   // Not in preview: Return Static Data
   if (!isPreview) {
     return {
-      pageData: data.page || data.blog || data.article,
-      storefrontSettings: data?.settings?.settings,
+      content: data.content,
+      storefrontSettings: data.settings?.settings,
     };
   }
 
-  return {pageData, storefrontSettings};
+  return {content, storefrontSettings};
 };

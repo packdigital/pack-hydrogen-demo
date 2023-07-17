@@ -31,7 +31,7 @@ export default function Index() {
         Collections
       </h2>
 
-      <RenderSections pageData={page} />
+      <RenderSections content={page} />
 
       <div className="grid-flow-row grid gap-2 gap-y-6 md:gap-4 lg:gap-6 grid-cols-1 sm:grid-cols-3">
         {collections.nodes.map((collection: any) => {

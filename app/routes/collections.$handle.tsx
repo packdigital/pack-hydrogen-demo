@@ -76,7 +76,7 @@ export default function Collection() {
         )}
       </header>
 
-      <RenderSections pageData={collectionPage} />
+      <RenderSections content={collectionPage} />
       <ProductGrid
         collection={collection}
         url={`/collections/${collection.handle}`}
