@@ -36,7 +36,9 @@ export const links = () => {
 };
 
 export async function loader({context}: LoaderArgs) {
-  const isPreviewModeEnabled = await context.pack.isPreviewModeEnabled();
+  const isPreviewModeEnabled = context.pack.isPreviewModeEnabled();
+
+  const siteSettings = await context.pack.query(SITE_SETTINGS_QUERY);
   const layout = await context.storefront.query(LAYOUT_QUERY);
 
   const analytics = {
@@ -44,13 +46,15 @@ export async function loader({context}: LoaderArgs) {
     shopId: layout.shop.id,
   };
 
-  return {layout, isPreviewModeEnabled, analytics};
+  return {siteSettings, layout, isPreviewModeEnabled, analytics};
 }
 
 export default function App() {
   const hasUserConsent = true;
-  const {layout, isPreviewModeEnabled} = useLoaderData();
+  const {siteSettings, layout, isPreviewModeEnabled} = useLoaderData();
   const {name} = layout.shop;
+
+  console.log('siteSettings: ', siteSettings);
 
   useShopifyCookies({hasUserConsent});
   useAnalytics(hasUserConsent, DEFAULT_LOCALE);
@@ -121,6 +125,25 @@ export function ErrorBoundary({error}: {error: Error}) {
     </html>
   );
 }
+
+const SITE_SETTINGS_QUERY = `#graphql
+  query SiteSettings($version: Version) {
+    siteSettings(version: $version) {
+      id
+      status
+      settings
+      seo {
+        title
+        description
+        keywords
+      }
+      favicon
+      publishedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
 
 const LAYOUT_QUERY = `#graphql
 query layout {
