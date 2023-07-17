@@ -17,41 +17,32 @@ export const useCustomizerShell = ({
   const [parentConnection, setParentConnection] = useState<any>(null);
 
   const refreshSections = useCallback(() => {
-    if (!sectionComponents) return [];
+    if (!sectionComponents || !parentConnection) return [];
 
     const sectionSchemas = sectionComponents
       .map((section: any) => {
-        if (section.Schema && typeof section.Schema === 'function') {
-          return section.Schema({...data});
-        }
-
-        return section.Schema;
+        return typeof section.Schema === 'function'
+          ? section.Schema(data)
+          : section.Schema;
       })
       .filter(Boolean);
 
-    if (parentConnection) {
-      try {
-        const sectionSchemasString = JSON.stringify(sectionSchemas);
-        parentConnection.setSectionsSchemas(sectionSchemasString);
-      } catch (error) {
-        console.error(error);
-        // parentConnection.displayError('Something went wrong parsing sections');
-      }
+    try {
+      parentConnection.setSectionsSchemas(JSON.stringify(sectionSchemas));
+    } catch (error) {
+      parentConnection.displayError('Something went wrong parsing sections');
     }
   }, [data, parentConnection, sectionComponents]);
 
   const refreshStorefrontSettingsSchema = useCallback(() => {
-    if (!storefrontSettingsSchema) return [];
+    if (!storefrontSettingsSchema || !parentConnection || !sectionComponents) {
+      return [];
+    }
 
-    const storefrontSettingsSchemaString = JSON.stringify(
-      storefrontSettingsSchema,
+    parentConnection.setStorefrontSettingsSchema(
+      JSON.stringify(storefrontSettingsSchema),
     );
 
-    if (parentConnection && sectionComponents) {
-      parentConnection.setStorefrontSettingsSchema(
-        storefrontSettingsSchemaString,
-      );
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, parentConnection, storefrontSettingsSchema]);
 
@@ -59,7 +50,6 @@ export const useCustomizerShell = ({
     if (!isPreview) return;
 
     const connection = connectToParent({
-      // Methods child is exposing to parent.
       methods: {
         routeToPage(path: string) {
           navigate(path);
@@ -98,6 +88,7 @@ export const useCustomizerShell = ({
 
   useEffect(() => {
     if (!isPreview) return;
+
     refreshSections();
     refreshStorefrontSettingsSchema();
   }, [
@@ -108,12 +99,8 @@ export const useCustomizerShell = ({
     sectionComponents,
   ]);
 
-  // Not in preview: Return Static Data
   if (!isPreview) {
-    return {
-      content: data.content,
-      storefrontSettings: data.settings?.settings,
-    };
+    return {content: data.content, storefrontSettings: data.settings?.settings};
   }
 
   return {content, storefrontSettings};
