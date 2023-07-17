@@ -5,10 +5,16 @@ import {AnalyticsPageType} from '@shopify/hydrogen';
 
 export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
-  const {page} = await context.pack.query(PAGE_QUERY, {variables: {handle}});
+  const {data} = await context.pack.query(PAGE_QUERY, {
+    variables: {handle},
+  });
   const analytics = {pageType: AnalyticsPageType.page};
 
-  return defer({page, analytics});
+  if (!data.page) {
+    throw new Response(null, {status: 404, statusText: 'Not found'});
+  }
+
+  return defer({page: data.page, analytics});
 }
 
 export default function Page() {

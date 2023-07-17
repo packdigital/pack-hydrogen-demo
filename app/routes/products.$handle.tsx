@@ -22,7 +22,7 @@ export async function loader({params, context, request}: LoaderArgs) {
     selectedOptions.push({name, value});
   });
 
-  const {productPage} = await context.pack.query(PRODUCT_PAGE_QUERY, {
+  const {data} = await context.pack.query(PRODUCT_PAGE_QUERY, {
     variables: {handle},
   });
   const {product} = await context.storefront.query(PRODUCT_QUERY, {
@@ -54,7 +54,13 @@ export async function loader({params, context, request}: LoaderArgs) {
     totalValue: parseFloat(selectedVariant.price.amount),
   };
 
-  return defer({product, productPage, selectedVariant, storeDomain, analytics});
+  return defer({
+    product,
+    productPage: data.productPage,
+    selectedVariant,
+    storeDomain,
+    analytics,
+  });
 }
 
 export default function ProductHandle() {

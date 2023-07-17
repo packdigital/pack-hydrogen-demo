@@ -20,7 +20,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   const searchParams = new URL(request.url).searchParams;
   const cursor = searchParams.get('cursor');
 
-  const {collectionPage} = await context.pack.query(COLLECTION_PAGE_QUERY, {
+  const {data} = await context.pack.query(COLLECTION_PAGE_QUERY, {
     variables: {handle},
   });
   const {collection} = await context.storefront.query(COLLECTION_QUERY, {
@@ -42,7 +42,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   };
 
   return defer({
-    collectionPage,
+    collectionPage: data.collectionPage,
     collection,
     analytics,
   });

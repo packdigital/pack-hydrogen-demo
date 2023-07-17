@@ -6,10 +6,14 @@ import {defer} from '@shopify/remix-oxygen';
 
 export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
-  const {blog} = await context.pack.query(BLOG_QUERY, {variables: {handle}});
+  const {data} = await context.pack.query(BLOG_QUERY, {variables: {handle}});
   const analytics = {pageType: AnalyticsPageType.blog};
 
-  return defer({blog, analytics});
+  if (!data.blog) {
+    throw new Response(null, {status: 404});
+  }
+
+  return defer({blog: data.blog, analytics});
 }
 
 export default function Blog() {

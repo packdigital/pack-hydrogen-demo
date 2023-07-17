@@ -40,12 +40,27 @@ interface QueryOptions {
   cache?: CachingStrategy;
 }
 
+interface QueryError {
+  message: string;
+  param?: string;
+  code?: string;
+  type: string;
+}
+
+interface QueryResponse<T> {
+  data: T | null;
+  error: QueryError | null;
+}
+
 export interface Pack {
   isPreviewModeEnabled: () => boolean;
   preview?: {
     session: PreviewSession;
   };
-  query: <T = any>(query: string, options?: QueryOptions) => Promise<T>;
+  query: <T = any>(
+    query: string,
+    options?: QueryOptions,
+  ) => Promise<QueryResponse<T>>;
 }
 
 const PRODUCTION_ENVIRONMENT = 'production' as const;
@@ -82,7 +97,7 @@ async function packFetch<T = any>({
   variables,
   previewEnabled,
   contentEnvironment = PRODUCTION_ENVIRONMENT,
-}: PackFetchOptions): Promise<T> {
+}: PackFetchOptions): Promise<QueryResponse<T>> {
   const url = `https://app.packdigital.com/graphql`;
 
   const queryVariables = variables || {};
@@ -109,12 +124,21 @@ async function packFetch<T = any>({
   }
 
   const body: any = await response.json();
+  let error = body.errors?.length ? body.errors[0] : null;
 
-  if (body.errors) {
-    throw new Error(`Pack API error: ${body.errors[0].message}`);
+  if (body.errors?.length) {
+    const firstError = body.errors[0];
+    const {extensions} = firstError;
+
+    error = {
+      message: firstError.message,
+      param: extensions.param,
+      code: extensions.code,
+      type: extensions.type,
+    };
   }
 
-  return body.data;
+  return {error, data: body.data};
 }
 
 export function createPackClient(options: CreatePackClientOptions): Pack {
@@ -130,7 +154,10 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
       {variables, cache: strategy = CacheLong()}: QueryOptions = {},
     ) {
       const queryHash = await hashQuery(query, variables);
-      const withCache = createWithCache_unstable<T>({cache, waitUntil});
+      const withCache = createWithCache_unstable<QueryResponse<T>>({
+        cache,
+        waitUntil,
+      });
 
       // The preview environment takes precedence over the content environment
       // provided when creating the client
@@ -145,9 +172,7 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
       };
 
       // Preview mode always bypasses the cache
-      if (previewEnabled) {
-        return packFetch<T>(fetchOptions);
-      }
+      if (previewEnabled) return packFetch<T>(fetchOptions);
 
       return withCache(queryHash, strategy, () => packFetch<T>(fetchOptions));
     },

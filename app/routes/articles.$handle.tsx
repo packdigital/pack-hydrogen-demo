@@ -5,13 +5,17 @@ import {AnalyticsPageType} from '@shopify/hydrogen';
 
 export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
-  const {article} = await context.pack.query(ARTICLE_QUERY, {
+  const {data} = await context.pack.query<any>(ARTICLE_QUERY, {
     variables: {handle},
   });
 
   const analytics = {pageType: AnalyticsPageType.article};
 
-  return defer({article, analytics});
+  if (!data.article) {
+    throw new Response(null, {status: 404});
+  }
+
+  return defer({article: data.article, analytics});
 }
 
 export default function Article() {

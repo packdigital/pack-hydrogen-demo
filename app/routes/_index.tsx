@@ -11,12 +11,12 @@ export function meta() {
 }
 
 export async function loader({context}: LoaderArgs) {
-  const {page} = await context.pack.query(HOME_PAGE_QUERY);
+  const {data} = await context.pack.query(HOME_PAGE_QUERY);
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY);
   const analytics = {pageType: AnalyticsPageType.home};
 
   return defer({
-    page,
+    page: data.page,
     collections,
     analytics,
   });
