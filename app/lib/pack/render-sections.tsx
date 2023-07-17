@@ -1,5 +1,6 @@
 import {v4 as uuidv4} from 'uuid';
 import sectionComponents from '~/sections';
+import storefrontSettingsSchema from '~/settings';
 import {useCustomizerShell} from './useCustomizerShell';
 import {usePreviewContext} from '~/lib/pack/preview/PreviewContent';
 
@@ -62,7 +63,7 @@ export function RenderSections({content}: any) {
       title: content.title,
       description: content.description,
     },
-    storefrontSettingsSchema: {},
+    storefrontSettingsSchema,
   });
 
   const sections = liveContent?.sections?.nodes || liveContent?.sections;
