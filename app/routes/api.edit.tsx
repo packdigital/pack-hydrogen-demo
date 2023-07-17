@@ -68,10 +68,12 @@ export const loader: LoaderFunction = async function ({request, context}) {
   //   throw new InvalidSecretError();
   // }
 
+  const environment = searchParams.get('environment');
   const path = searchParams.get('path') ?? ROOT_PATH;
   const redirectTo = isLocalPath(request, path) ? path : ROOT_PATH;
 
   pack.preview.session.set('enabled', true);
+  pack.preview.session.set('environment', environment);
 
   return redirect(redirectTo, {
     status: 307,

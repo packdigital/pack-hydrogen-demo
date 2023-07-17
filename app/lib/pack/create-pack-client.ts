@@ -42,6 +42,8 @@ export interface Pack {
   query: <T = any>(query: string, options?: QueryOptions) => Promise<T>;
 }
 
+const PRODUCTION_ENVIRONMENT = 'production' as const;
+
 /**
  * Create an SHA-256 hash as a hex string
  * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#converting_a_digest_to_a_hex_string
@@ -75,6 +77,8 @@ async function packFetch<T = any>({
   preview,
 }: PackFetchOptions): Promise<T> {
   const url = `https://app.packdigital.com/graphql`;
+  const environment =
+    (preview && preview.session.get('environment')) || PRODUCTION_ENVIRONMENT;
   const previewEnabled = preview && preview.session.get('enabled');
 
   const queryVariables = variables || {};
@@ -87,9 +91,11 @@ async function packFetch<T = any>({
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+      /* eslint-disable @typescript-eslint/naming-convention */
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
+      'X-Environment': environment,
+      /* eslint-enable @typescript-eslint/naming-convention */
     },
     body: JSON.stringify({query, variables: queryVariables}),
   });
