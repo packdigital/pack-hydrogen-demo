@@ -19,7 +19,10 @@ interface EnvironmentOptions {
 
 interface CreatePackClientOptions extends EnvironmentOptions {
   token: string;
-  preview?: {session: PreviewSession};
+  preview?: {
+    session: PreviewSession;
+  };
+  contentEnvironment?: string;
 }
 
 type Variables = Record<string, any>;
@@ -28,7 +31,8 @@ interface PackFetchOptions {
   token: string;
   query: string;
   variables?: Variables;
-  preview?: {session: PreviewSession};
+  previewEnabled?: boolean;
+  contentEnvironment?: string;
 }
 
 interface QueryOptions {
@@ -38,7 +42,9 @@ interface QueryOptions {
 
 export interface Pack {
   isPreviewModeEnabled: () => boolean;
-  preview?: {session: PreviewSession};
+  preview?: {
+    session: PreviewSession;
+  };
   query: <T = any>(query: string, options?: QueryOptions) => Promise<T>;
 }
 
@@ -74,12 +80,10 @@ async function packFetch<T = any>({
   token,
   query,
   variables,
-  preview,
+  previewEnabled,
+  contentEnvironment = PRODUCTION_ENVIRONMENT,
 }: PackFetchOptions): Promise<T> {
   const url = `https://app.packdigital.com/graphql`;
-  const environment =
-    (preview && preview.session.get('environment')) || PRODUCTION_ENVIRONMENT;
-  const previewEnabled = preview && preview.session.get('enabled');
 
   const queryVariables = variables || {};
   if (previewEnabled) {
@@ -94,7 +98,7 @@ async function packFetch<T = any>({
       /* eslint-disable @typescript-eslint/naming-convention */
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
-      'X-Environment': environment,
+      'X-Environment': contentEnvironment,
       /* eslint-enable @typescript-eslint/naming-convention */
     },
     body: JSON.stringify({query, variables: queryVariables}),
@@ -114,11 +118,13 @@ async function packFetch<T = any>({
 }
 
 export function createPackClient(options: CreatePackClientOptions): Pack {
-  const {cache, waitUntil, preview} = options;
+  const {cache, waitUntil, preview, contentEnvironment} = options;
+  const previewEnabled = !!preview?.session.get('enabled');
+  const previewEnvironment = preview?.session.get('environment');
 
   return {
     preview,
-    isPreviewModeEnabled: () => preview && preview.session.get('enabled'),
+    isPreviewModeEnabled: () => previewEnabled,
     async query<T = any>(
       query: string,
       {variables, cache: strategy = CacheLong()}: QueryOptions = {},
@@ -126,14 +132,24 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
       const queryHash = await hashQuery(query, variables);
       const withCache = createWithCache_unstable<T>({cache, waitUntil});
 
+      // The preview environment takes precedence over the content environment
+      // provided when creating the client
+      const environment =
+        previewEnvironment || contentEnvironment || PRODUCTION_ENVIRONMENT;
+      const fetchOptions = {
+        query,
+        variables,
+        token: options.token,
+        preview,
+        contentEnvironment: environment,
+      };
+
       // Preview mode always bypasses the cache
-      if (preview && preview.session.get('enabled')) {
-        return packFetch<T>({query, variables, token: options.token, preview});
+      if (previewEnabled) {
+        return packFetch<T>(fetchOptions);
       }
 
-      return withCache(queryHash, strategy, () =>
-        packFetch<T>({query, variables, token: options.token, preview}),
-      );
+      return withCache(queryHash, strategy, () => packFetch<T>(fetchOptions));
     },
   };
 }

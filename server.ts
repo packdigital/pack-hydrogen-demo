@@ -53,6 +53,7 @@ export default {
         waitUntil,
         token: env.PACK_SECRET_TOKEN,
         preview: {session: previewSession},
+        contentEnvironment: env.PACK_CONTENT_ENVIRONMENT,
       });
 
       /**
