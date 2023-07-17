@@ -6,7 +6,7 @@ import {
 
 export class PreviewSession {
   #sessionStorage: SessionStorage;
-  #session: Session;
+  readonly #session: Session;
 
   constructor(sessionStorage: SessionStorage, session: Session) {
     this.#sessionStorage = sessionStorage;
@@ -42,10 +42,6 @@ export class PreviewSession {
   destroy(): Promise<string> {
     return this.#sessionStorage.destroySession(this.#session);
   }
-
-  // unset(key: string) {
-  //   this.session.unset(key);
-  // }
 
   set(key: string, value: any): void {
     this.#session.set(key, value);

@@ -1,7 +1,8 @@
+import {ReactNode} from 'react';
 import {PreviewContext} from '~/lib/pack/preview/PreviewContent';
 
 interface PreviewContentProps {
-  children: React.ReactNode;
+  children: ReactNode;
   preview?: boolean;
 }
 
