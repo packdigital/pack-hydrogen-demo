@@ -54,8 +54,6 @@ export default function App() {
   const {siteSettings, layout, isPreviewModeEnabled} = useLoaderData();
   const {name} = layout.shop;
 
-  console.log('siteSettings: ', siteSettings);
-
   useShopifyCookies({hasUserConsent});
   useAnalytics(hasUserConsent, DEFAULT_LOCALE);
 
