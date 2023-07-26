@@ -1,4 +1,4 @@
-name: netlify-main-deploy
+name: netlify-branch-deploy
 on:
   workflow_dispatch:
     inputs:
@@ -11,11 +11,8 @@ on:
         description: Add a message to send to Netlify build
   push:
     branches:
-      - 'main'
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+      - '**'
+      - '!main'
 
 jobs:
   build:
@@ -30,6 +27,7 @@ jobs:
         with:
           deploy_id: ${{ github.event.inputs.deploy_id }}
           message: ${{ github.event.inputs.message }}
+          branch: ${{ github.head_ref || github.ref_name }}
           backpack_api_secret_token: ${{ secrets[format('BACKPACK_API_SECRET_TOKEN_{0}', matrix.STOREFRONT)] != '' && secrets[format('BACKPACK_API_SECRET_TOKEN_{0}', matrix.STOREFRONT)] || secrets.BACKPACK_API_SECRET_TOKEN }}
           backpack_site_id: ${{ secrets[format('BACKPACK_SITE_ID_{0}', matrix.STOREFRONT)] != '' && secrets[format('BACKPACK_SITE_ID_{0}', matrix.STOREFRONT)] || secrets.BACKPACK_SITE_ID }}
           cms_content_token: ${{ secrets[format('CMS_CONTENT_TOKEN_{0}', matrix.STOREFRONT)] != '' && secrets[format('CMS_CONTENT_TOKEN_{0}', matrix.STOREFRONT)] || secrets.CMS_CONTENT_TOKEN }}
