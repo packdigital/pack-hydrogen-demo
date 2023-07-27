@@ -1,5 +1,6 @@
 import {useLoaderData} from '@remix-run/react';
-import {defer, LoaderArgs} from '@shopify/remix-oxygen';
+// import {defer, LoaderArgs} from '@shopify/remix-oxygen';
+import {defer} from '@remix-run/server-runtime';
 import ProductGrid from '~/components/ProductGrid';
 import {RenderSections} from '~/lib/pack';
 import {AnalyticsPageType} from '@shopify/hydrogen';
@@ -15,7 +16,7 @@ export const handle = {
   seo,
 };
 
-export async function loader({params, context, request}: LoaderArgs) {
+export async function loader({params, context, request}: any) {
   const {handle} = params;
   const searchParams = new URL(request.url).searchParams;
   const cursor = searchParams.get('cursor');

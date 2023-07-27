@@ -1,9 +1,11 @@
-import {
-  type ActionFunction,
-  json,
-  type LoaderFunction,
-  redirect,
-} from '@shopify/remix-oxygen';
+// import {
+//   type ActionFunction,
+//   json,
+//   type LoaderFunction,
+//   redirect,
+// } from '@shopify/remix-oxygen';
+
+import {json, redirect} from '@remix-run/router';
 
 const ROOT_PATH = '/' as const;
 
@@ -29,6 +31,8 @@ function isLocalPath(request: Request, url: string) {
  * A `POST` request to this route will exit preview mode
  * POST /api/edit Content-Type: application/x-www-form-urlencoded
  */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export const action: ActionFunction = async ({request, context}) => {
   const {preview} = context.pack;
 
@@ -53,6 +57,8 @@ export const action: ActionFunction = async ({request, context}) => {
 /**
  * A `GET` request to this route will enter preview mode
  */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export const loader: LoaderFunction = async function ({request, context}) {
   const {env, pack} = context;
 

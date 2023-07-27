@@ -1,5 +1,6 @@
 import {useLoaderData} from '@remix-run/react';
-import {defer, LoaderArgs} from '@shopify/remix-oxygen';
+// import {defer, LoaderArgs} from '@shopify/remix-oxygen';
+import {defer} from '@remix-run/server-runtime';
 import {
   AnalyticsPageType,
   MediaFile,
@@ -10,7 +11,7 @@ import {
 import ProductOptions from '~/components/ProductOptions';
 import {RenderSections} from '~/lib/pack';
 
-export async function loader({params, context, request}: LoaderArgs) {
+export async function loader({params, context, request}: any) {
   const {handle} = params;
   const storeDomain = context.storefront.getShopifyDomain();
 

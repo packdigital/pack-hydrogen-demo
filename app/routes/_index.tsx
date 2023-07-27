@@ -1,5 +1,6 @@
 import {useLoaderData, Link} from '@remix-run/react';
-import {defer, LoaderArgs} from '@shopify/remix-oxygen';
+// import {defer, LoaderArgs} from '@shopify/remix-oxygen';
+import {defer} from '@remix-run/server-runtime';
 import {AnalyticsPageType, Image} from '@shopify/hydrogen';
 import {RenderSections} from '~/lib/pack';
 
@@ -10,7 +11,7 @@ export function meta() {
   ];
 }
 
-export async function loader({context}: LoaderArgs) {
+export async function loader({context}: any) {
   const {data} = await context.pack.query(HOME_PAGE_QUERY);
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY);
   const analytics = {pageType: AnalyticsPageType.home};
