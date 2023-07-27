@@ -1,5 +1,4 @@
 /// <reference types="@remix-run/dev" />
-/// <reference types="@shopify/remix-oxygen" />
 /// <reference types="@shopify/oxygen-workers-types" />
 
 import type {Storefront} from '@shopify/hydrogen';
@@ -10,6 +9,7 @@ declare global {
   /**
    * A global `process` object is only available during build to access NODE_ENV.
    */
+  // @ts-ignore
   const process: {env: {NODE_ENV: 'production' | 'development'}};
 
   /**

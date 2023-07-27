@@ -1,8 +1,11 @@
-import {
-  createCookieSessionStorage,
-  type Session,
-  type SessionStorage,
-} from '@shopify/remix-oxygen';
+// import {
+//   createCookieSessionStorage,
+//   type Session,
+//   type SessionStorage,
+// } from '@shopify/remix-oxygen';
+
+import {Session, SessionStorage} from '@remix-run/server-runtime';
+import {createCookieSessionStorage} from '@remix-run/node';
 
 export class PreviewSession {
   #sessionStorage: SessionStorage;
