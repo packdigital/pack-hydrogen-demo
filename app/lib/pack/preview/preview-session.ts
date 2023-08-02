@@ -20,8 +20,8 @@ export class PreviewSession {
     const storage = createCookieSessionStorage({
       cookie: {
         name: '__preview',
-        httpOnly: true,
-        sameSite: true,
+        sameSite: 'none',
+        secure: true,
         secrets,
       },
     });
