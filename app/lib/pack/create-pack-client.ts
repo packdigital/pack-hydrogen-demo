@@ -1,4 +1,4 @@
-import {CacheLong, createWithCache_unstable} from '@shopify/hydrogen';
+import {CacheLong, createWithCache} from '@shopify/hydrogen';
 import {PreviewSession} from './preview/preview-session';
 
 /** @see https://shopify.dev/docs/custom-storefronts/hydrogen/data-fetching/cache#caching-strategies */
@@ -154,7 +154,7 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
       {variables, cache: strategy = CacheLong()}: QueryOptions = {},
     ) {
       const queryHash = await hashQuery(query, variables);
-      const withCache = createWithCache_unstable<QueryResponse<T>>({
+      const withCache = createWithCache<QueryResponse<T>>({
         cache,
         waitUntil,
       });

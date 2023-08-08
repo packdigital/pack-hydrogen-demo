@@ -66,6 +66,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
+
       <body>
         <PreviewProvider preview={isPreviewModeEnabled}>
           <Layout title={name}>
