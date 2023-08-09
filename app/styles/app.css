@@ -7,5 +7,20 @@
 @layer base {
   html {
     font-family: 'Inter', sans-serif;
+    @apply font-light leading-[1.5];
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-10 py-4 flex items-center justify-center rounded text-xs uppercase hover:underline;
+  }
+
+  .btn:disabled {
+    @apply pointer-events-none opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-cyan-400;
   }
 }

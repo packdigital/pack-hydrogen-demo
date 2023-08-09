@@ -1,29 +1,27 @@
-import {useLoaderData, Link} from '@remix-run/react';
+import {useLoaderData} from '@remix-run/react';
 import {defer, LoaderArgs} from '@shopify/remix-oxygen';
 import {AnalyticsPageType, Image} from '@shopify/hydrogen';
 import {RenderSections} from '~/lib/pack';
 
 export function meta() {
   return [
-    {title: 'Hydrogen'},
-    {description: 'A custom storefront powered by Hydrogen'},
+    {title: 'Pack Hydrogen Demo'},
+    {description: 'A Hydrogen storefront powered by Pack.'},
   ];
 }
 
 export async function loader({context}: LoaderArgs) {
   const {data} = await context.pack.query(HOME_PAGE_QUERY);
-  const {collections} = await context.storefront.query(COLLECTIONS_QUERY);
   const analytics = {pageType: AnalyticsPageType.home};
 
   return defer({
     page: data.page,
-    collections,
     analytics,
   });
 }
 
 export default function Index() {
-  const {collections, page} = useLoaderData();
+  const {page} = useLoaderData();
 
   return (
     <div className="flex flex-col gap-4">
@@ -85,22 +83,4 @@ query HomePage($version: Version, $cursor: String) {
   }
 }
 ${SECTION_FRAGMENT}
-`;
-
-const COLLECTIONS_QUERY = `#graphql
-query FeaturedCollections {
-  collections(first: 3, query: "collection_type:smart")  {
-    nodes {
-      id
-      title
-      handle
-      image {
-        altText
-        width
-        height
-        url
-      }
-    }
-  }
-}
 `;

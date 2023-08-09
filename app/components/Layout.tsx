@@ -31,18 +31,14 @@ export function Layout({children}: {children: ReactNode}) {
         </div>
       </header>
 
-      <main
-        role="main"
-        id="mainContent"
-        className="container flex-grow p-4 lg:px-6"
-      >
+      <main role="main" id="mainContent" className="flex-grow py-4">
         {children}
       </main>
 
       <footer className="mt-14 border-t border-t-gray-200">
         <div className="container pt-6 pb-4 flex flex-col gap-10">
           <ul className="flex flex-col gap-4 text-xs font-light">
-            <li className="font-bold uppercase">Shop all</li>
+            <li className="font-bold uppercase">Menu</li>
             <li>Shop all</li>
             <li>Story</li>
             <li>About this demo</li>
