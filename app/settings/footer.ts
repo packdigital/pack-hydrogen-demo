@@ -67,12 +67,6 @@ export default {
             },
           ],
         },
-        {
-          label: 'Site Copyright Notice',
-          name: 'copyrightNotice',
-          component: 'text',
-          defaultValue: 'All Rights Reserved',
-        },
       ],
     },
   ],

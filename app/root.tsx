@@ -52,7 +52,6 @@ export async function loader({context}: LoaderArgs) {
 export default function App() {
   const hasUserConsent = true;
   const {siteSettings, layout, isPreviewModeEnabled} = useLoaderData();
-  const {name} = layout.shop;
 
   useShopifyCookies({hasUserConsent});
   useAnalytics(hasUserConsent, DEFAULT_LOCALE);
@@ -69,7 +68,7 @@ export default function App() {
 
       <body>
         <PreviewProvider preview={isPreviewModeEnabled}>
-          <Layout title={name}>
+          <Layout siteSettings={siteSettings?.data?.siteSettings}>
             <Outlet />
           </Layout>
         </PreviewProvider>

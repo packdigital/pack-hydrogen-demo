@@ -1,7 +1,6 @@
 import {Link as RemixLink} from '@remix-run/react';
 
 export const FiftyFiftyHero = ({cms}: any) => {
-  console.log('===asdf', cms);
   return (
     <div
       className={`container flex flex-col md:flex-row items-center gap-4 ${
