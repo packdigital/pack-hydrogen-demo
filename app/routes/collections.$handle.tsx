@@ -79,7 +79,9 @@ export default function Collection() {
         url={`/collections/${collection.handle}`}
       />
 
-      {collectionPage && <RenderSections content={collectionPage} />}
+      <div className="grid grid-cols-1 gap-4">
+        {collectionPage && <RenderSections content={collectionPage} />}
+      </div>
     </div>
   );
 }
