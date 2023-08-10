@@ -1,6 +1,7 @@
 import {useLoaderData} from '@remix-run/react';
 import {defer, LoaderArgs} from '@shopify/remix-oxygen';
-import {AnalyticsPageType, Image} from '@shopify/hydrogen';
+import {AnalyticsPageType} from '@shopify/hydrogen';
+
 import {RenderSections} from '~/lib/pack';
 
 export function meta() {
@@ -24,7 +25,7 @@ export default function Index() {
   const {page} = useLoaderData();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid gap-4">
       <RenderSections content={page} />
     </div>
   );

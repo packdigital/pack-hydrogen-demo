@@ -7,8 +7,10 @@ import {
   ShopifyAnalyticsProduct,
   ShopPayButton,
 } from '@shopify/hydrogen';
-import ProductOptions from '~/components/ProductOptions';
+
 import {RenderSections} from '~/lib/pack';
+
+import ProductOptions from '~/components/ProductOptions';
 
 export async function loader({params, context, request}: LoaderArgs) {
   const {handle} = params;
@@ -25,6 +27,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   const {data} = await context.pack.query(PRODUCT_PAGE_QUERY, {
     variables: {handle},
   });
+
   const {product} = await context.storefront.query(PRODUCT_QUERY, {
     variables: {
       handle,
@@ -32,7 +35,7 @@ export async function loader({params, context, request}: LoaderArgs) {
     },
   });
 
-  if (!product?.id) {
+  if (!data.productPage) {
     throw new Response(null, {status: 404});
   }
   // optionally set a default variant, so you always have an "orderable" product selected

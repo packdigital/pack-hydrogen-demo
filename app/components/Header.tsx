@@ -1,4 +1,4 @@
-import {Link as RemixLink} from '@remix-run/react';
+import {Link} from '@remix-run/react';
 
 export const Header = ({settings}: {settings: Record<string, any>}) => {
   return (
@@ -11,15 +11,12 @@ export const Header = ({settings}: {settings: Record<string, any>}) => {
             </div>
           </nav>
 
-          <a className="col-span-1 justify-self-center" href="/">
+          <Link className="col-span-1 justify-self-center" to="/">
             {/* Pack SVG Logo */}
             <img src="/logo.svg" alt="Pack logo" />
-          </a>
+          </Link>
 
-          <a href="/cart" className="col-span-1 justify-self-end">
-            {/* Cart SVG Icon */}
-            <img src="/cart-icon.svg" alt="Shopping bag icon" />
-          </a>
+          <div className="col-span-1 justify-self-end" />
         </div>
       </div>
 
@@ -37,7 +34,7 @@ const NavList = ({links}: {links: Array<Record<string, any>>}) => {
       {links?.map(({link}, index) => {
         return (
           <li className="hover:underline" key={index}>
-            <RemixLink to={link?.url}>{link?.text}</RemixLink>
+            <Link to={link?.url}>{link?.text}</Link>
           </li>
         );
       })}

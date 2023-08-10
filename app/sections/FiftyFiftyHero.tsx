@@ -1,4 +1,4 @@
-import {Link as RemixLink} from '@remix-run/react';
+import {Link} from '@remix-run/react';
 
 export const FiftyFiftyHero = ({cms}: any) => {
   return (
@@ -21,9 +21,9 @@ export const FiftyFiftyHero = ({cms}: any) => {
         <p className="max-w-[400px]">{cms?.subtext}</p>
 
         {cms?.ctaButtonLink?.text && (
-          <RemixLink to={cms.ctaButtonLink?.url} className="btn-primary">
+          <Link to={cms.ctaButtonLink?.url} className="btn-primary">
             {cms.ctaButtonLink?.text}
-          </RemixLink>
+          </Link>
         )}
       </div>
     </div>

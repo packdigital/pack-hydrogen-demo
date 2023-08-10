@@ -10,15 +10,18 @@ import {
   useRouteError,
 } from '@remix-run/react';
 import {Seo, ShopifySalesChannel, useShopifyCookies} from '@shopify/hydrogen';
-import {DEFAULT_LOCALE} from './lib/utils';
-import styles from './styles/app.css';
-import favicon from '../public/favicon.svg';
-import {Layout} from './components/Layout';
-import {NotFound} from './components/NotFound';
-import {GenericError} from './components/GenericError';
 import {LoaderArgs} from '@shopify/remix-oxygen';
+
+import favicon from '../public/favicon.svg';
+import styles from '~/styles/app.css';
+
+import {DEFAULT_LOCALE} from '~/lib/utils';
 import {PreviewProvider} from '~/lib/pack';
+
 import {useAnalytics} from '~/hooks/useAnalytics';
+import {Layout} from '~/components/Layout';
+import {NotFound} from '~/components/NotFound';
+import {GenericError} from '~/components/GenericError';
 
 export const links = () => {
   return [

@@ -1,4 +1,4 @@
-import {Link as RemixLink} from '@remix-run/react';
+import {Link} from '@remix-run/react';
 import {PackDemoMessage} from './PackDemoMessage';
 
 export const Footer = ({settings}: {settings: Record<string, any>}) => {
@@ -11,7 +11,7 @@ export const Footer = ({settings}: {settings: Record<string, any>}) => {
             ({link}: {link: Record<string, any>}, index: number) => {
               return (
                 <li key={index}>
-                  <RemixLink to={link?.url}>{link?.text}</RemixLink>
+                  <Link to={link?.url}>{link?.text}</Link>
                 </li>
               );
             },
@@ -19,17 +19,17 @@ export const Footer = ({settings}: {settings: Record<string, any>}) => {
         </ul>
 
         <div className="flex justify-between gap-6">
-          <a className="col-span-1 justify-self-center" href="/">
+          <Link className="col-span-1 justify-self-center" to="/">
             {/* Pack SVG Logo */}
             <img src="/logo.svg" alt="Pack logo" className="w-6" />
-          </a>
+          </Link>
 
           <ul className="flex gap-4 text-xs font-light">
             {settings?.legal?.links?.map(
               ({link}: {link: Record<string, any>}, index: number) => {
                 return (
                   <li key={index}>
-                    <RemixLink to={link?.url}>{link?.text}</RemixLink>
+                    <Link to={link?.url}>{link?.text}</Link>
                   </li>
                 );
               },

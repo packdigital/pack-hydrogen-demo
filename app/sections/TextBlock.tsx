@@ -1,6 +1,10 @@
+import {Markdown} from '~/components/Markdown';
+
 export const TextBlock = ({cms}: any) => {
   return (
-    <div className="mx-auto max-w-3xl py-10 px-4 ld:px-6"> {cms?.text} </div>
+    <Markdown className="mx-auto max-w-3xl py-10 px-4 ld:px-6">
+      {cms?.text}
+    </Markdown>
   );
 };
 

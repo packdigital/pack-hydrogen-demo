@@ -17,6 +17,13 @@ export const handle = {
   seo,
 };
 
+export function meta({data}: any) {
+  return [
+    {title: data?.collection?.title ?? 'Collection'},
+    {description: data?.collection?.description},
+  ];
+}
+
 export async function loader({params, context, request}: LoaderArgs) {
   const {handle} = params;
   const searchParams = new URL(request.url).searchParams;
@@ -25,6 +32,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   const {data} = await context.pack.query(COLLECTION_PAGE_QUERY, {
     variables: {handle},
   });
+
   const {collection} = await context.storefront.query(COLLECTION_QUERY, {
     variables: {
       handle,
@@ -33,7 +41,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   });
 
   // Handle 404s
-  if (!collection) {
+  if (!data.collectionPage) {
     throw new Response(null, {status: 404});
   }
 
@@ -48,13 +56,6 @@ export async function loader({params, context, request}: LoaderArgs) {
     collection,
     analytics,
   });
-}
-
-export function meta({data}: any) {
-  return [
-    {title: data?.collection?.title ?? 'Collection'},
-    {description: data?.collection?.description},
-  ];
 }
 
 export default function Collection() {

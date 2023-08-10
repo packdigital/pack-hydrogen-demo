@@ -30,7 +30,7 @@ export default function CollectionGrid({collection, url}: any) {
     setProducts((prev: any[]) => [...prev, ...collection.products.nodes]);
     setNextPage(collection.products.pageInfo.hasNextPage);
     setEndCursor(collection.products.pageInfo.endCursor);
-  }, [fetcher.data]);
+  }, [url, fetcher.data]);
 
   return (
     <section className="container">
@@ -51,15 +51,6 @@ export default function CollectionGrid({collection, url}: any) {
               <span>Load more &rarr;</span>
             )}
           </button>
-          // <div className="mt-8 flex items-center justify-center">
-          //   <button
-          //     className="w-full btn-primary"
-          //     disabled={fetcher.state !== 'idle'}
-          //     onClick={fetchMoreProducts}
-          //   >
-          //     {fetcher.state !== 'idle' ? 'Loading...' : 'Load more products'}
-          //   </button>
-          // </div>
         )}
       </div>
     </section>

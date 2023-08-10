@@ -1,3 +1,4 @@
+import {useEffect} from 'react';
 import {useFetchers, useLocation, useMatches} from '@remix-run/react';
 import {
   AnalyticsEventName,
@@ -7,7 +8,6 @@ import {
   ShopifyPageViewPayload,
   useShopifyCookies,
 } from '@shopify/hydrogen';
-import {useEffect} from 'react';
 
 import {CartAction, I18nLocale} from '~/lib/type';
 

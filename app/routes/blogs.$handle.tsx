@@ -1,8 +1,8 @@
-import {LoaderArgs} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
-import {RenderSections} from '~/lib/pack';
+import {defer, LoaderArgs} from '@shopify/remix-oxygen';
 import {AnalyticsPageType} from '@shopify/hydrogen';
-import {defer} from '@shopify/remix-oxygen';
+
+import {RenderSections} from '~/lib/pack';
 
 export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
