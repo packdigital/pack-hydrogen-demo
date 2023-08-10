@@ -1,8 +1,10 @@
 import {useLoaderData} from '@remix-run/react';
 import {defer, LoaderArgs} from '@shopify/remix-oxygen';
-import ProductGrid from '~/components/ProductGrid';
-import {RenderSections} from '~/lib/pack';
 import {AnalyticsPageType} from '@shopify/hydrogen';
+
+import {RenderSections} from '~/lib/pack';
+
+import CollectionGrid from '~/components/CollectionGrid';
 
 const seo = ({data}: any) => {
   return {
@@ -15,6 +17,13 @@ export const handle = {
   seo,
 };
 
+export function meta({data}: any) {
+  return [
+    {title: data?.collection?.title ?? 'Collection'},
+    {description: data?.collection?.description},
+  ];
+}
+
 export async function loader({params, context, request}: LoaderArgs) {
   const {handle} = params;
   const searchParams = new URL(request.url).searchParams;
@@ -23,6 +32,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   const {data} = await context.pack.query(COLLECTION_PAGE_QUERY, {
     variables: {handle},
   });
+
   const {collection} = await context.storefront.query(COLLECTION_QUERY, {
     variables: {
       handle,
@@ -31,9 +41,12 @@ export async function loader({params, context, request}: LoaderArgs) {
   });
 
   // Handle 404s
-  if (!collection) {
+  if (!data.collection) {
     throw new Response(null, {status: 404});
   }
+  // if (!data.collectionPage) {
+  //   throw new Response(null, {status: 404});
+  // }
 
   const analytics = {
     pageType: AnalyticsPageType.collection,
@@ -42,46 +55,38 @@ export async function loader({params, context, request}: LoaderArgs) {
   };
 
   return defer({
-    collectionPage: data.collectionPage,
+    collectionPage: data?.collectionPage,
     collection,
     analytics,
   });
-}
-
-export function meta({data}: any) {
-  return [
-    {title: data?.collection?.title ?? 'Collection'},
-    {description: data?.collection?.description},
-  ];
 }
 
 export default function Collection() {
   const {collection, collectionPage} = useLoaderData();
 
   return (
-    <>
-      <header className="grid w-full gap-8 py-8 justify-items-start">
-        <h1 className="text-4xl whitespace-pre-wrap font-bold inline-block">
+    <div className="grid gap-4">
+      <header className="container space-y-3 mb-8">
+        <h1 className="text-4xl whitespace-pre-wrap font-bold">
           {collection.title}
         </h1>
 
         {collection.description && (
-          <div className="flex items-baseline justify-between w-full">
-            <div>
-              <p className="max-w-md whitespace-pre-wrap inherit text-copy inline-block">
-                {collection.description}
-              </p>
-            </div>
-          </div>
+          <p className="text-2xl max-w-lg whitespace-pre-wrap">
+            {collection.description}
+          </p>
         )}
       </header>
 
-      <RenderSections content={collectionPage} />
-      <ProductGrid
+      <CollectionGrid
         collection={collection}
         url={`/collections/${collection.handle}`}
       />
-    </>
+
+      <div className="grid grid-cols-1 gap-4 mt-4 pt-9 border-t border-t-gray-200 container px-0">
+        {collectionPage && <RenderSections content={collectionPage} />}
+      </div>
+    </div>
   );
 }
 
@@ -138,7 +143,7 @@ query CollectionDetails($handle: String!, $cursor: String) {
     title
     description
     handle
-    products(first: 4, after: $cursor) {
+    products(first: 10, after: $cursor) {
       pageInfo {
         hasNextPage
         endCursor

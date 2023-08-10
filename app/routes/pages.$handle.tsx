@@ -19,6 +19,7 @@ export async function loader({params, context}: LoaderArgs) {
 
 export default function Page() {
   const {page} = useLoaderData();
+  console.log('=== page', page);
 
   return (
     <div>

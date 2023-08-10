@@ -7,8 +7,17 @@ import {
   ShopifyAnalyticsProduct,
   ShopPayButton,
 } from '@shopify/hydrogen';
-import ProductOptions from '~/components/ProductOptions';
+
 import {RenderSections} from '~/lib/pack';
+
+import ProductOptions from '~/components/ProductOptions';
+
+export function meta({data}: any) {
+  return [
+    {title: data?.product?.title ?? 'Product'},
+    {description: data?.product?.description},
+  ];
+}
 
 export async function loader({params, context, request}: LoaderArgs) {
   const {handle} = params;
@@ -25,6 +34,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   const {data} = await context.pack.query(PRODUCT_PAGE_QUERY, {
     variables: {handle},
   });
+
   const {product} = await context.storefront.query(PRODUCT_QUERY, {
     variables: {
       handle,
@@ -32,7 +42,7 @@ export async function loader({params, context, request}: LoaderArgs) {
     },
   });
 
-  if (!product?.id) {
+  if (!data.productPage) {
     throw new Response(null, {status: 404});
   }
   // optionally set a default variant, so you always have an "orderable" product selected
@@ -65,55 +75,65 @@ export async function loader({params, context, request}: LoaderArgs) {
 
 export default function ProductHandle() {
   const {product, productPage, selectedVariant, storeDomain} = useLoaderData();
-  const orderable = selectedVariant?.availableForSale || false;
+  const {price, compareAtPrice, availableForSale} = selectedVariant || {};
+  const orderable = availableForSale || false;
+  const isDiscounted = compareAtPrice?.amount > price?.amount;
 
   return (
-    <section className="w-full gap-4 md:gap-8 grid px-6 md:px-8 lg:px-12">
-      <div className="grid items-start gap-6 lg:gap-20 md:grid-cols-2 lg:grid-cols-3">
-        <div className="grid md:grid-flow-row  md:p-0 md:overflow-x-hidden md:grid-cols-2 md:w-full lg:col-span-2">
-          <div className="md:col-span-2 snap-center card-image aspect-square md:w-full w-[80vw] shadow rounded">
-            <ProductGallery media={product.media.nodes} />
-          </div>
+    <div className="grid gap-4">
+      <section className="container grid items-start gap-6 lg:gap-12 md:grid-cols-2 ">
+        <div
+          className={`${
+            !product?.media?.nodes?.length && 'bg-gray-100'
+          } col-span-1 aspect-square w-[80vw] md:w-full`}
+        >
+          <ProductGallery media={product.media.nodes} />
         </div>
 
-        <div className="md:sticky md:mx-auto max-w-xl md:max-w-[24rem] grid gap-8 p-0 md:p-6 md:px-0 top-[6rem] lg:top-[8rem] xl:top-[10rem]">
+        <div className="col-span-1 md:sticky grid gap-2 top-[6rem]">
           <div className="grid gap-2">
-            <h1 className="text-4xl font-bold leading-10 whitespace-normal">
-              {product.title}
-            </h1>
-            <span className="max-w-prose whitespace-pre-wrap inherit text-copy opacity-50 font-medium">
-              {product.vendor}
+            <span className="max-w-prose whitespace-pre-wrap inherit text-2xl flex gap-2">
+              <Money
+                withoutTrailingZeros
+                data={price}
+                className={`${isDiscounted ? 'text-red-800' : ''}`}
+              />
+
+              {isDiscounted && (
+                <Money
+                  className="line-through opacity-50"
+                  withoutTrailingZeros
+                  data={compareAtPrice}
+                />
+              )}
             </span>
+
+            <h1 className="text-4xl font-bold">{product.title}</h1>
+
+            <p dangerouslySetInnerHTML={{__html: product.descriptionHtml}} />
           </div>
 
           <ProductOptions
             options={product.options}
             selectedVariant={selectedVariant}
           />
-          <Money
-            withoutTrailingZeros
-            data={selectedVariant.price}
-            className="text-xl font-semibold mb-2"
-          />
+
           {orderable && (
             <div className="space-y-2">
               <ShopPayButton
                 storeDomain={storeDomain}
                 variantIds={[selectedVariant?.id]}
-                width={'400px'}
+                width={'100%'}
               />
-              {/* TODO product form */}
             </div>
           )}
-          <div
-            className="prose border-t border-gray-200 pt-6 text-black text-md"
-            dangerouslySetInnerHTML={{__html: product.descriptionHtml}}
-          ></div>
         </div>
-      </div>
+      </section>
 
-      <RenderSections content={productPage} />
-    </section>
+      <div className="grid grid-cols-1 gap-4 mt-4 pt-9 border-t border-t-gray-200 container px-0">
+        <RenderSections content={productPage} />
+      </div>
+    </div>
   );
 }
 
@@ -159,7 +179,7 @@ function ProductGallery({media}: any) {
           <div
             className={`${
               i % 3 === 0 ? 'md:col-span-2' : 'md:col-span-1'
-            } snap-center card-image bg-white aspect-square md:w-full w-[80vw] shadow-sm rounded`}
+            } snap-center card-image bg-white aspect-square md:w-full w-[80vw] rounded`}
             key={data.id || data.image.id}
           >
             <MediaFile
@@ -229,6 +249,7 @@ query product($handle: String!, $selectedOptions: [SelectedOptionInput!]!) {
     title
     handle
     vendor
+    description
     descriptionHtml
     media(first: 10) {
       nodes {

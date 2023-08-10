@@ -1,17 +1,7 @@
 import {Hero} from './Hero';
-import {HalfHero} from './HalfHero';
-import {Markdown} from './Markdown';
-import {SocialImagesGrid} from './SocialImagesGrid';
+import {FiftyFiftyHero} from './FiftyFiftyHero';
 import {TextBlock} from './TextBlock';
-import {ThreeTiles} from './ThreeTiles';
 
-const sections = [
-  Hero,
-  HalfHero,
-  SocialImagesGrid,
-  Markdown,
-  TextBlock,
-  ThreeTiles,
-];
+const sections = [Hero, FiftyFiftyHero, TextBlock];
 
 export default sections;

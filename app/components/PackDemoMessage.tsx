@@ -1,0 +1,33 @@
+export const PackDemoMessage = () => {
+  return (
+    <div className="bg-black py-6 px-4 rounded text-white text-sm text-center font-light">
+      <p>
+        This is a simple demo storefront brought to you by{' '}
+        <a href="https://packdigital.com" className="underline text-[#00BE8E]">
+          Pack
+        </a>
+        . <br />
+        <br />
+        <div className="grid gap-2 max-w-xs mx-auto">
+          <a
+            target="_blank"
+            href="https://github.com/packdigital/pack-hydrogen-demo"
+            className="px-4 py-1 border border-[#00bE8E] rounded hover:underline"
+            rel="noreferrer"
+          >
+            Explore this demo on GitHub &rarr;
+          </a>
+
+          <a
+            target="_blank"
+            href="https://github.com/packdigital/pack-hydrogen-demo"
+            className="px-4 py-1 border border-[#00bE8E] rounded hover:underline"
+            rel="noreferrer"
+          >
+            Learn how to customize this storefront with Pack &rarr;
+          </a>
+        </div>
+      </p>
+    </div>
+  );
+};

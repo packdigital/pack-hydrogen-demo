@@ -1,8 +1,9 @@
-import {useFetcher} from '@remix-run/react';
 import {useEffect, useState} from 'react';
+import {useFetcher} from '@remix-run/react';
+
 import ProductCard from './ProductCard';
 
-export default function ProductGrid({collection, url}: any) {
+export default function CollectionGrid({collection, url}: any) {
   const [nextPage, setNextPage] = useState(
     collection.products.pageInfo.hasNextPage,
   );
@@ -29,26 +30,29 @@ export default function ProductGrid({collection, url}: any) {
     setProducts((prev: any[]) => [...prev, ...collection.products.nodes]);
     setNextPage(collection.products.pageInfo.hasNextPage);
     setEndCursor(collection.products.pageInfo.endCursor);
-  }, [fetcher.data]);
+  }, [url, fetcher.data]);
 
   return (
-    <section className="w-full gap-4 md:gap-8 grid">
-      <div className="grid-flow-row grid gap-2 gap-y-6 md:gap-4 lg:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <section className="container">
+      <div className="grid-flow-row grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {products.map((product: any) => (
           <ProductCard key={product.id} product={product} />
         ))}
-      </div>
-      {nextPage && (
-        <div className="flex items-center justify-center mt-6">
+
+        {nextPage && (
           <button
-            className="inline-block rounded font-medium text-center py-3 px-6 border w-full cursor-pointer"
+            className="border border-gray-200 aspect-square rounded uppercase font-bold hover:underline hover:bg-gray-100"
             disabled={fetcher.state !== 'idle'}
             onClick={fetchMoreProducts}
           >
-            {fetcher.state !== 'idle' ? 'Loading...' : 'Load more products'}
+            {fetcher.state !== 'idle' ? (
+              'Loading...'
+            ) : (
+              <span>Load more &rarr;</span>
+            )}
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </section>
   );
 }

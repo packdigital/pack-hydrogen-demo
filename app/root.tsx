@@ -10,15 +10,18 @@ import {
   useRouteError,
 } from '@remix-run/react';
 import {Seo, ShopifySalesChannel, useShopifyCookies} from '@shopify/hydrogen';
-import {DEFAULT_LOCALE} from './lib/utils';
-import styles from './styles/app.css';
-import favicon from '../public/favicon.svg';
-import {Layout} from './components/Layout';
-import {NotFound} from './components/NotFound';
-import {GenericError} from './components/GenericError';
 import {LoaderArgs} from '@shopify/remix-oxygen';
+
+import favicon from '../public/favicon.svg';
+import styles from '~/styles/app.css';
+
+import {DEFAULT_LOCALE} from '~/lib/utils';
 import {PreviewProvider} from '~/lib/pack';
+
 import {useAnalytics} from '~/hooks/useAnalytics';
+import {Layout} from '~/components/Layout';
+import {NotFound} from '~/components/NotFound';
+import {GenericError} from '~/components/GenericError';
 
 export const links = () => {
   return [
@@ -51,8 +54,7 @@ export async function loader({context}: LoaderArgs) {
 
 export default function App() {
   const hasUserConsent = true;
-  const {siteSettings, layout, isPreviewModeEnabled} = useLoaderData();
-  const {name} = layout.shop;
+  const {siteSettings, isPreviewModeEnabled} = useLoaderData();
 
   useShopifyCookies({hasUserConsent});
   useAnalytics(hasUserConsent, DEFAULT_LOCALE);
@@ -66,9 +68,10 @@ export default function App() {
         <Meta />
         <Links />
       </head>
+
       <body>
         <PreviewProvider preview={isPreviewModeEnabled}>
-          <Layout title={name}>
+          <Layout siteSettings={siteSettings?.data?.siteSettings}>
             <Outlet />
           </Layout>
         </PreviewProvider>
@@ -81,6 +84,7 @@ export default function App() {
 
 export function ErrorBoundary({error}: {error: Error}) {
   const [root] = useMatches();
+  const {siteSettings, isPreviewModeEnabled} = useLoaderData() || {};
   const locale = root?.data?.selectedLocale ?? DEFAULT_LOCALE;
   const routeError = useRouteError();
   const isRouteError = isRouteErrorResponse(routeError);
@@ -103,7 +107,10 @@ export function ErrorBoundary({error}: {error: Error}) {
         <Links />
       </head>
       <body>
-        <Layout title="Not found" key={`${locale.language}-${locale.country}`}>
+        <Layout
+          siteSettings={siteSettings?.data?.siteSettings}
+          key={`${locale.language}-${locale.country}`}
+        >
           {isRouteError ? (
             <>
               {routeError.status === 404 ? (
