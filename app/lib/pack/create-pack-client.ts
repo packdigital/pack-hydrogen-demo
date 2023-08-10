@@ -167,7 +167,7 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
         query,
         variables,
         token: options.token,
-        preview,
+        previewEnabled,
         contentEnvironment: environment,
       };
 
