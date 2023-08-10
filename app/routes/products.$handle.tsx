@@ -12,6 +12,13 @@ import {RenderSections} from '~/lib/pack';
 
 import ProductOptions from '~/components/ProductOptions';
 
+export function meta({data}: any) {
+  return [
+    {title: data?.product?.title ?? 'Product'},
+    {description: data?.product?.description},
+  ];
+}
+
 export async function loader({params, context, request}: LoaderArgs) {
   const {handle} = params;
   const storeDomain = context.storefront.getShopifyDomain();
@@ -242,6 +249,7 @@ query product($handle: String!, $selectedOptions: [SelectedOptionInput!]!) {
     title
     handle
     vendor
+    description
     descriptionHtml
     media(first: 10) {
       nodes {

@@ -41,9 +41,12 @@ export async function loader({params, context, request}: LoaderArgs) {
   });
 
   // Handle 404s
-  if (!data.collectionPage) {
+  if (!data.collection) {
     throw new Response(null, {status: 404});
   }
+  // if (!data.collectionPage) {
+  //   throw new Response(null, {status: 404});
+  // }
 
   const analytics = {
     pageType: AnalyticsPageType.collection,
