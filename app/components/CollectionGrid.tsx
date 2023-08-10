@@ -33,24 +33,35 @@ export default function CollectionGrid({collection, url}: any) {
   }, [fetcher.data]);
 
   return (
-    <section className="w-full">
+    <section className="container">
       <div className="grid-flow-row grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {products.map((product: any) => (
           <ProductCard key={product.id} product={product} />
         ))}
-      </div>
 
-      {nextPage && (
-        <div className="mt-8 flex items-center justify-center">
+        {nextPage && (
           <button
-            className="w-full btn-primary"
+            className="border border-gray-200 aspect-square rounded uppercase font-bold hover:underline hover:bg-gray-100"
             disabled={fetcher.state !== 'idle'}
             onClick={fetchMoreProducts}
           >
-            {fetcher.state !== 'idle' ? 'Loading...' : 'Load more products'}
+            {fetcher.state !== 'idle' ? (
+              'Loading...'
+            ) : (
+              <span>Load more &rarr;</span>
+            )}
           </button>
-        </div>
-      )}
+          // <div className="mt-8 flex items-center justify-center">
+          //   <button
+          //     className="w-full btn-primary"
+          //     disabled={fetcher.state !== 'idle'}
+          //     onClick={fetchMoreProducts}
+          //   >
+          //     {fetcher.state !== 'idle' ? 'Loading...' : 'Load more products'}
+          //   </button>
+          // </div>
+        )}
+      </div>
     </section>
   );
 }

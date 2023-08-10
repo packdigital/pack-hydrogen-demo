@@ -61,8 +61,8 @@ export default function Collection() {
   const {collection, collectionPage} = useLoaderData();
 
   return (
-    <div className="container">
-      <header className="w-full space-y-3 mb-8">
+    <div className="grid gap-4">
+      <header className="container space-y-3 mb-8">
         <h1 className="text-4xl whitespace-pre-wrap font-bold">
           {collection.title}
         </h1>
@@ -79,7 +79,7 @@ export default function Collection() {
         url={`/collections/${collection.handle}`}
       />
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-4 mt-4 pt-9 border-t border-t-gray-200 container px-0">
         {collectionPage && <RenderSections content={collectionPage} />}
       </div>
     </div>

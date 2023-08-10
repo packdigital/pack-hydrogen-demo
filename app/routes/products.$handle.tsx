@@ -70,8 +70,8 @@ export default function ProductHandle() {
   const isDiscounted = compareAtPrice?.amount > price?.amount;
 
   return (
-    <div className="w-full container">
-      <section className="grid items-start gap-6 lg:gap-12 md:grid-cols-2 ">
+    <div className="grid gap-4">
+      <section className="container grid items-start gap-6 lg:gap-12 md:grid-cols-2 ">
         <div
           className={`${
             !product?.media?.nodes?.length && 'bg-gray-100'
@@ -120,7 +120,7 @@ export default function ProductHandle() {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-4 mt-4 pt-9 border-t border-t-gray-200 container px-0">
         <RenderSections content={productPage} />
       </div>
     </div>
