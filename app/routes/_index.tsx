@@ -4,10 +4,10 @@ import {AnalyticsPageType} from '@shopify/hydrogen';
 
 import {RenderSections} from '~/lib/pack';
 
-export function meta() {
+export function meta({data}: any) {
   return [
-    {title: 'Pack Hydrogen Demo'},
-    {description: 'A Hydrogen storefront powered by Pack.'},
+    {title: data?.page?.title ?? 'Pack Hydrogen Demo'},
+    {description: data?.page?.description},
   ];
 }
 

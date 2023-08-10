@@ -19,7 +19,7 @@ export const handle = {
 
 export function meta({data}: any) {
   return [
-    {title: data?.collection?.title ?? 'Collection'},
+    {title: data?.collection?.title ?? 'Pack Hydrogen Demo'},
     {description: data?.collection?.description},
   ];
 }
@@ -41,12 +41,9 @@ export async function loader({params, context, request}: LoaderArgs) {
   });
 
   // Handle 404s
-  if (!data.collection) {
+  if (!data.collectionPage) {
     throw new Response(null, {status: 404});
   }
-  // if (!data.collectionPage) {
-  //   throw new Response(null, {status: 404});
-  // }
 
   const analytics = {
     pageType: AnalyticsPageType.collection,

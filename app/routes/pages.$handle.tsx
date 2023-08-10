@@ -3,6 +3,13 @@ import {useLoaderData} from '@remix-run/react';
 import {RenderSections} from '~/lib/pack';
 import {AnalyticsPageType} from '@shopify/hydrogen';
 
+export function meta({data}: any) {
+  return [
+    {title: data?.page?.title ?? 'Pack Hydrogen Demo'},
+    {description: data?.page?.description},
+  ];
+}
+
 export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
   const {data} = await context.pack.query(PAGE_QUERY, {
@@ -19,7 +26,6 @@ export async function loader({params, context}: LoaderArgs) {
 
 export default function Page() {
   const {page} = useLoaderData();
-  console.log('=== page', page);
 
   return (
     <div>

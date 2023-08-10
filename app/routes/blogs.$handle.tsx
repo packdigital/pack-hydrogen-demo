@@ -4,6 +4,13 @@ import {AnalyticsPageType} from '@shopify/hydrogen';
 
 import {RenderSections} from '~/lib/pack';
 
+export function meta({data}: any) {
+  return [
+    {title: data?.blog?.title ?? 'Pack Hydrogen Demo'},
+    {description: data?.blog?.description},
+  ];
+}
+
 export async function loader({params, context}: LoaderArgs) {
   const {handle} = params;
   const {data} = await context.pack.query(BLOG_QUERY, {variables: {handle}});

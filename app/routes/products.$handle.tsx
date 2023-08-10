@@ -14,7 +14,7 @@ import ProductOptions from '~/components/ProductOptions';
 
 export function meta({data}: any) {
   return [
-    {title: data?.product?.title ?? 'Product'},
+    {title: data?.product?.title ?? 'Pack Hydrogen Demo'},
     {description: data?.product?.description},
   ];
 }
