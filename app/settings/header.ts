@@ -19,6 +19,26 @@ export default {
           component: 'link',
         },
       ],
+      defaultValue: [
+        {
+          link: {
+            text: 'Shop All',
+            url: '/collections/all',
+          },
+        },
+        {
+          link: {
+            text: 'Story',
+            url: '/pages/about-us',
+          },
+        },
+        {
+          link: {
+            text: 'About this demo',
+            url: '/pages/demo-info',
+          },
+        },
+      ],
     },
   ],
 };

@@ -1,8 +1,10 @@
 import {useLoaderData} from '@remix-run/react';
 import {defer, LoaderArgs} from '@shopify/remix-oxygen';
-import ProductGrid from '~/components/ProductGrid';
-import {RenderSections} from '~/lib/pack';
 import {AnalyticsPageType} from '@shopify/hydrogen';
+
+import {RenderSections} from '~/lib/pack';
+
+import CollectionGrid from '~/components/CollectionGrid';
 
 const seo = ({data}: any) => {
   return {
@@ -42,7 +44,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   };
 
   return defer({
-    collectionPage: data.collectionPage,
+    collectionPage: data?.collectionPage,
     collection,
     analytics,
   });
@@ -59,29 +61,26 @@ export default function Collection() {
   const {collection, collectionPage} = useLoaderData();
 
   return (
-    <>
-      <header className="grid w-full gap-8 py-8 justify-items-start">
-        <h1 className="text-4xl whitespace-pre-wrap font-bold inline-block">
+    <div className="container">
+      <header className="w-full space-y-3 mb-8">
+        <h1 className="text-4xl whitespace-pre-wrap font-bold">
           {collection.title}
         </h1>
 
         {collection.description && (
-          <div className="flex items-baseline justify-between w-full">
-            <div>
-              <p className="max-w-md whitespace-pre-wrap inherit text-copy inline-block">
-                {collection.description}
-              </p>
-            </div>
-          </div>
+          <p className="text-2xl max-w-lg whitespace-pre-wrap">
+            {collection.description}
+          </p>
         )}
       </header>
 
-      <RenderSections content={collectionPage} />
-      <ProductGrid
+      <CollectionGrid
         collection={collection}
         url={`/collections/${collection.handle}`}
       />
-    </>
+
+      {collectionPage && <RenderSections content={collectionPage} />}
+    </div>
   );
 }
 
@@ -138,7 +137,7 @@ query CollectionDetails($handle: String!, $cursor: String) {
     title
     description
     handle
-    products(first: 4, after: $cursor) {
+    products(first: 10, after: $cursor) {
       pageInfo {
         hasNextPage
         endCursor

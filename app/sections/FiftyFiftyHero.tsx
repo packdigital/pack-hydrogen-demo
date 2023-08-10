@@ -18,7 +18,7 @@ export const FiftyFiftyHero = ({cms}: any) => {
       <div className="basis-1/2 p-4 lg:p-8 flex flex-col gap-6 items-start">
         <h2 className="font-bold italic text-2xl">{cms?.heading}</h2>
 
-        <p>{cms?.subtext}</p>
+        <p className="max-w-[400px]">{cms?.subtext}</p>
 
         {cms?.ctaButtonLink?.text && (
           <RemixLink to={cms.ctaButtonLink?.url} className="btn-primary">

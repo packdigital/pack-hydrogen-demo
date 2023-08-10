@@ -1,8 +1,9 @@
-import {useFetcher} from '@remix-run/react';
 import {useEffect, useState} from 'react';
+import {useFetcher} from '@remix-run/react';
+
 import ProductCard from './ProductCard';
 
-export default function ProductGrid({collection, url}: any) {
+export default function CollectionGrid({collection, url}: any) {
   const [nextPage, setNextPage] = useState(
     collection.products.pageInfo.hasNextPage,
   );
@@ -32,16 +33,17 @@ export default function ProductGrid({collection, url}: any) {
   }, [fetcher.data]);
 
   return (
-    <section className="w-full gap-4 md:gap-8 grid">
-      <div className="grid-flow-row grid gap-2 gap-y-6 md:gap-4 lg:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <section className="w-full">
+      <div className="grid-flow-row grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {products.map((product: any) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
+
       {nextPage && (
-        <div className="flex items-center justify-center mt-6">
+        <div className="mt-8 flex items-center justify-center">
           <button
-            className="inline-block rounded font-medium text-center py-3 px-6 border w-full cursor-pointer"
+            className="w-full btn-primary"
             disabled={fetcher.state !== 'idle'}
             onClick={fetchMoreProducts}
           >
