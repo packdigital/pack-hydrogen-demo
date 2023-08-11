@@ -19,6 +19,7 @@ interface EnvironmentOptions {
 }
 
 interface CreatePackClientOptions extends EnvironmentOptions {
+  apiUrl?: string;
   token: string;
   preview?: {
     session: PreviewSession;
@@ -85,7 +86,8 @@ function hashQuery(query: string, variables?: Variables): Promise<string> {
 }
 
 export function createPackClient(options: CreatePackClientOptions): Pack {
-  const {cache, waitUntil, preview, contentEnvironment, token} = options;
+  const {cache, waitUntil, preview, contentEnvironment, token, apiUrl} =
+    options;
   const previewEnabled = !!preview?.session.get('enabled');
   const previewEnvironment = preview?.session.get('environment');
 
@@ -93,6 +95,7 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
     previewEnvironment || contentEnvironment || PRODUCTION_ENVIRONMENT;
 
   const packClient = new PackClient({
+    apiUrl,
     token,
     contentEnvironment: clientContentEnvironment,
   });
