@@ -84,7 +84,6 @@ export default function App() {
 
 export function ErrorBoundary({error}: {error: Error}) {
   const [root] = useMatches();
-  const {siteSettings, isPreviewModeEnabled} = useLoaderData() || {};
   const locale = root?.data?.selectedLocale ?? DEFAULT_LOCALE;
   const routeError = useRouteError();
   const isRouteError = isRouteErrorResponse(routeError);
@@ -107,10 +106,7 @@ export function ErrorBoundary({error}: {error: Error}) {
         <Links />
       </head>
       <body>
-        <Layout
-          siteSettings={siteSettings?.data?.siteSettings}
-          key={`${locale.language}-${locale.country}`}
-        >
+        <Layout key={`${locale.language}-${locale.country}`}>
           {isRouteError ? (
             <>
               {routeError.status === 404 ? (

@@ -18,6 +18,7 @@ interface EnvironmentOptions {
 }
 
 interface CreatePackClientOptions extends EnvironmentOptions {
+  apiUrl: string;
   token: string;
   preview?: {
     session: PreviewSession;
@@ -28,6 +29,7 @@ interface CreatePackClientOptions extends EnvironmentOptions {
 type Variables = Record<string, any>;
 
 interface PackFetchOptions {
+  apiUrl: string;
   token: string;
   query: string;
   variables?: Variables;
@@ -92,14 +94,13 @@ function hashQuery(query: string, variables?: Variables): Promise<string> {
 }
 
 async function packFetch<T = any>({
+  apiUrl,
   token,
   query,
   variables,
   previewEnabled,
   contentEnvironment = PRODUCTION_ENVIRONMENT,
 }: PackFetchOptions): Promise<QueryResponse<T>> {
-  const url = `https://app.packdigital.com/graphql`;
-
   const queryVariables = variables || {};
   if (previewEnabled) {
     queryVariables.version = 'CURRENT';
@@ -107,7 +108,7 @@ async function packFetch<T = any>({
     queryVariables.version = 'PUBLISHED';
   }
 
-  const response = await fetch(url, {
+  const response = await fetch(apiUrl, {
     method: 'POST',
     headers: {
       /* eslint-disable @typescript-eslint/naming-convention */
@@ -142,7 +143,7 @@ async function packFetch<T = any>({
 }
 
 export function createPackClient(options: CreatePackClientOptions): Pack {
-  const {cache, waitUntil, preview, contentEnvironment} = options;
+  const {apiUrl, cache, waitUntil, preview, contentEnvironment} = options;
   const previewEnabled = !!preview?.session.get('enabled');
   const previewEnvironment = preview?.session.get('environment');
 
@@ -164,6 +165,7 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
       const environment =
         previewEnvironment || contentEnvironment || PRODUCTION_ENVIRONMENT;
       const fetchOptions = {
+        apiUrl,
         query,
         variables,
         token: options.token,

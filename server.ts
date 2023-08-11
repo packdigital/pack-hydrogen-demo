@@ -48,7 +48,10 @@ export default {
         storefrontHeaders: getStorefrontHeaders(request),
       });
 
+      const apiUrl =
+        `${env.PACK_API_URL}/graphql` || 'https://app.packdigital.com/graphql';
       const pack = createPackClient({
+        apiUrl,
         cache,
         waitUntil,
         token: env.PACK_SECRET_TOKEN,
