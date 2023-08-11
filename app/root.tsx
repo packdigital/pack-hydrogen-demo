@@ -16,7 +16,7 @@ import favicon from '../public/favicon.svg';
 import styles from '~/styles/app.css';
 
 import {DEFAULT_LOCALE} from '~/lib/utils';
-import {PreviewProvider} from '@backpackjs/react';
+import {PreviewProvider} from '@pack/react';
 
 import {useAnalytics} from '~/hooks/useAnalytics';
 import {Layout} from '~/components/Layout';

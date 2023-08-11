@@ -1,5 +1,5 @@
 import {CacheLong, createWithCache} from '@shopify/hydrogen';
-import {PackClient} from '@backpackjs/client';
+import {PackClient} from '@pack/client';
 import {PreviewSession} from './preview/preview-session';
 
 /** @see https://shopify.dev/docs/custom-storefronts/hydrogen/data-fetching/cache#caching-strategies */

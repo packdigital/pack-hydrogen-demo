@@ -1,4 +1,4 @@
-import {registerSection} from '@backpackjs/react';
+import {registerSection} from '@pack/react';
 import {Hero} from './Hero';
 import {FiftyFiftyHero} from './FiftyFiftyHero';
 import {TextBlock} from './TextBlock';
