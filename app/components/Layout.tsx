@@ -6,7 +6,7 @@ export function Layout({
   siteSettings,
   children,
 }: {
-  siteSettings: Record<string, any>;
+  siteSettings?: Record<string, any>;
   children: ReactNode;
 }) {
   return (

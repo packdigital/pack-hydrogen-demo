@@ -24,6 +24,7 @@ declare global {
     PACK_PUBLIC_TOKEN: string;
     PACK_SECRET_TOKEN: string;
     PACK_CONTENT_ENVIRONMENT?: string;
+    PACK_API_URL?: string;
   }
 }
 
