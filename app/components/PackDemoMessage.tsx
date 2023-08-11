@@ -1,7 +1,7 @@
 export const PackDemoMessage = () => {
   return (
     <div className="bg-black py-6 px-4 rounded text-white text-sm text-center font-light">
-      <p>
+      <>
         This is a simple demo storefront brought to you by{' '}
         <a href="https://packdigital.com" className="underline text-[#00BE8E]">
           Pack
@@ -27,7 +27,7 @@ export const PackDemoMessage = () => {
             Learn how to customize this storefront with Pack &rarr;
           </a>
         </div>
-      </p>
+      </>
     </div>
   );
 };

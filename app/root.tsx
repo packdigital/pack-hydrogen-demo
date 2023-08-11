@@ -16,12 +16,16 @@ import favicon from '../public/favicon.svg';
 import styles from '~/styles/app.css';
 
 import {DEFAULT_LOCALE} from '~/lib/utils';
-import {PreviewProvider} from '~/lib/pack';
+import {PreviewProvider} from '@backpackjs/react';
 
 import {useAnalytics} from '~/hooks/useAnalytics';
 import {Layout} from '~/components/Layout';
 import {NotFound} from '~/components/NotFound';
 import {GenericError} from '~/components/GenericError';
+
+import {registerSections} from '~/sections';
+
+registerSections();
 
 export const links = () => {
   return [
@@ -132,22 +136,22 @@ export function ErrorBoundary({error}: {error: Error}) {
 }
 
 const SITE_SETTINGS_QUERY = `#graphql
-  query SiteSettings($version: Version) {
-    siteSettings(version: $version) {
-      id
-      status
-      settings
-      seo {
-        title
-        description
-        keywords
-      }
-      favicon
-      publishedAt
-      createdAt
-      updatedAt
+query SiteSettings($version: Version) {
+  siteSettings(version: $version) {
+    id
+    status
+    settings
+    seo {
+      title
+      description
+      keywords
     }
+    favicon
+    publishedAt
+    createdAt
+    updatedAt
   }
+}
 `;
 
 const LAYOUT_QUERY = `#graphql
