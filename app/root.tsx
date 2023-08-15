@@ -70,8 +70,11 @@ export default function App() {
       </head>
 
       <body>
-        <PreviewProvider preview={isPreviewModeEnabled}>
-          <Layout siteSettings={siteSettings?.data?.siteSettings}>
+        <PreviewProvider
+          isPreviewModeEnabled={isPreviewModeEnabled}
+          siteSettings={siteSettings}
+        >
+          <Layout>
             <Outlet />
           </Layout>
         </PreviewProvider>
@@ -133,12 +136,6 @@ const SITE_SETTINGS_QUERY = `#graphql
       id
       status
       settings
-      seo {
-        title
-        description
-        keywords
-      }
-      favicon
       publishedAt
       createdAt
       updatedAt

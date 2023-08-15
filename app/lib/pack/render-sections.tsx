@@ -1,8 +1,9 @@
 import {v4 as uuidv4} from 'uuid';
 import sectionComponents from '~/sections';
 import storefrontSettingsSchema from '~/settings';
-import {useCustomizerShell} from './useCustomizerShell';
-import {usePreviewContext} from '~/lib/pack/preview/PreviewContent';
+import {useCustomizerShell} from './use-customizer-shell';
+import {usePreviewContext} from '~/lib/pack/preview/preview-content';
+import {useEffect} from 'react';
 
 function Sections({content, sections}: any) {
   const componentMap =
@@ -49,11 +50,11 @@ function Sections({content, sections}: any) {
 }
 
 export function RenderSections({content}: any) {
-  const preview = usePreviewContext();
+  const {isPreview, setPreviewStorefrontSettings} = usePreviewContext();
 
   const {content: liveContent, storefrontSettings} = useCustomizerShell({
     environment: 'production',
-    isPreview: preview,
+    isPreview,
     sectionComponents,
     data: {
       content,
@@ -65,6 +66,11 @@ export function RenderSections({content}: any) {
     },
     storefrontSettingsSchema,
   });
+
+  useEffect(() => {
+    storefrontSettings &&
+      setPreviewStorefrontSettings({settings: storefrontSettings});
+  }, [setPreviewStorefrontSettings, storefrontSettings]);
 
   const sections = liveContent?.sections?.nodes || liveContent?.sections;
 
