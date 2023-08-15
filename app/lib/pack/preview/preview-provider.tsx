@@ -1,4 +1,4 @@
-import {ReactNode, useEffect, useState} from 'react';
+import {ReactNode, useState} from 'react';
 import {PreviewContext} from '~/lib/pack/preview/preview-content';
 
 interface PreviewContentProps {
