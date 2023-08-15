@@ -19,17 +19,13 @@ Hydrogen is Shopify’s stack for headless commerce. Hydrogen is designed to dov
 
 ## Getting started
 
-**Requirements:**
+### Requirements
 
 - Node.js version 16.14.0 or higher
 
-```bash
-npm create @shopify/hydrogen@latest -- --template hello-world
-```
-
+### Environment Variables
 Remember to update `.env` with your shop's domain and Storefront API token!
 
-**ENV**
 ```
 # These variables are only available locally in MiniOxygen
 
