@@ -22,7 +22,6 @@ import {useAnalytics} from '~/hooks/useAnalytics';
 import {Layout} from '~/components/Layout';
 import {NotFound} from '~/components/NotFound';
 import {GenericError} from '~/components/GenericError';
-import {useEffect} from 'react';
 
 export const links = () => {
   return [
