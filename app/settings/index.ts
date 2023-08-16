@@ -1,4 +1,8 @@
+import {registerStorefrontSettingsSchema} from '@pack/react';
+
 import footer from './footer';
 import header from './header';
 
-export default [header, footer];
+export function registerStorefrontSettings() {
+  registerStorefrontSettingsSchema([header, footer]);
+}

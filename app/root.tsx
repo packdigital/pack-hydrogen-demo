@@ -24,8 +24,10 @@ import {NotFound} from '~/components/NotFound';
 import {GenericError} from '~/components/GenericError';
 
 import {registerSections} from '~/sections';
+import {registerStorefrontSettings} from '~/settings';
 
 registerSections();
+registerStorefrontSettings();
 
 export const links = () => {
   return [
@@ -74,8 +76,11 @@ export default function App() {
       </head>
 
       <body>
-        <PreviewProvider preview={isPreviewModeEnabled}>
-          <Layout siteSettings={siteSettings?.data?.siteSettings}>
+        <PreviewProvider
+          isPreviewModeEnabled={isPreviewModeEnabled}
+          siteSettings={siteSettings}
+        >
+          <Layout>
             <Outlet />
           </Layout>
         </PreviewProvider>
