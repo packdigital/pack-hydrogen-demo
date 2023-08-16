@@ -73,6 +73,7 @@ export const useCustomizerShell = ({
     connection.promise.then((parent: any) => {
       const {template, templateType, content} = data;
 
+      parent.sendStorefrontSettings();
       parent.setCurrentRoute({
         environment,
         currentPath: location.pathname,
@@ -84,6 +85,10 @@ export const useCustomizerShell = ({
       });
       setParentConnection(parent);
     });
+
+    return () => {
+      connection.destroy();
+    };
   }, []);
 
   useEffect(() => {

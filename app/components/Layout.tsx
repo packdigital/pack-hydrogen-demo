@@ -13,11 +13,9 @@ export function Layout({
   return (
     <>
       <Header settings={siteSettings?.settings?.header} />
-
       <main role="main" id="mainContent" className="flex-grow py-4">
         {children}
       </main>
-
       <Footer settings={siteSettings?.settings?.footer} />
     </>
   );

@@ -137,22 +137,16 @@ export function ErrorBoundary({error}: {error: Error}) {
 }
 
 const SITE_SETTINGS_QUERY = `#graphql
-query SiteSettings($version: Version) {
-  siteSettings(version: $version) {
-    id
-    status
-    settings
-    seo {
-      title
-      description
-      keywords
+  query SiteSettings($version: Version) {
+    siteSettings(version: $version) {
+      id
+      status
+      settings
+      publishedAt
+      createdAt
+      updatedAt
     }
-    favicon
-    publishedAt
-    createdAt
-    updatedAt
   }
-}
 `;
 
 const LAYOUT_QUERY = `#graphql
