@@ -7,9 +7,7 @@ import {
   ShopifyAnalyticsProduct,
   ShopPayButton,
 } from '@shopify/hydrogen';
-
-import {RenderSections} from '~/lib/pack';
-
+import {RenderSections} from '@pack/react';
 import ProductOptions from '~/components/ProductOptions';
 
 export function meta({data}: any) {

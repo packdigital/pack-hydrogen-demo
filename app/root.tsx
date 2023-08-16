@@ -16,12 +16,18 @@ import favicon from '../public/favicon.svg';
 import styles from '~/styles/app.css';
 
 import {DEFAULT_LOCALE} from '~/lib/utils';
-import {PreviewProvider} from '~/lib/pack';
+import {PreviewProvider} from '@pack/react';
 
 import {useAnalytics} from '~/hooks/useAnalytics';
 import {Layout} from '~/components/Layout';
 import {NotFound} from '~/components/NotFound';
 import {GenericError} from '~/components/GenericError';
+
+import {registerSections} from '~/sections';
+import {registerStorefrontSettings} from '~/settings';
+
+registerSections();
+registerStorefrontSettings();
 
 export const links = () => {
   return [

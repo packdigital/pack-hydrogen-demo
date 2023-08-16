@@ -1,7 +1,7 @@
 import {defer, LoaderArgs} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
-import {RenderSections} from '~/lib/pack';
 import {AnalyticsPageType} from '@shopify/hydrogen';
+import {RenderSections} from '@pack/react';
 
 export function meta({data}: any) {
   return [

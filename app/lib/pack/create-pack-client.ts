@@ -1,4 +1,5 @@
 import {CacheLong, createWithCache} from '@shopify/hydrogen';
+import {PackClient} from '@pack/client';
 import {PreviewSession} from './preview/preview-session';
 
 /** @see https://shopify.dev/docs/custom-storefronts/hydrogen/data-fetching/cache#caching-strategies */
@@ -18,7 +19,7 @@ interface EnvironmentOptions {
 }
 
 interface CreatePackClientOptions extends EnvironmentOptions {
-  apiUrl: string;
+  apiUrl?: string;
   token: string;
   preview?: {
     session: PreviewSession;
@@ -27,15 +28,6 @@ interface CreatePackClientOptions extends EnvironmentOptions {
 }
 
 type Variables = Record<string, any>;
-
-interface PackFetchOptions {
-  apiUrl: string;
-  token: string;
-  query: string;
-  variables?: Variables;
-  previewEnabled?: boolean;
-  contentEnvironment?: string;
-}
 
 interface QueryOptions {
   variables?: Variables;
@@ -93,59 +85,20 @@ function hashQuery(query: string, variables?: Variables): Promise<string> {
   return sha256(hash);
 }
 
-async function packFetch<T = any>({
-  apiUrl,
-  token,
-  query,
-  variables,
-  previewEnabled,
-  contentEnvironment = PRODUCTION_ENVIRONMENT,
-}: PackFetchOptions): Promise<QueryResponse<T>> {
-  const queryVariables = variables || {};
-  if (previewEnabled) {
-    queryVariables.version = 'CURRENT';
-  } else {
-    queryVariables.version = 'PUBLISHED';
-  }
-
-  const response = await fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      /* eslint-disable @typescript-eslint/naming-convention */
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-      'X-Environment': contentEnvironment,
-      /* eslint-enable @typescript-eslint/naming-convention */
-    },
-    body: JSON.stringify({query, variables: queryVariables}),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Pack API error: ${response.statusText}`);
-  }
-
-  const body: any = await response.json();
-  let error = body.errors?.length ? body.errors[0] : null;
-
-  if (body.errors?.length) {
-    const firstError = body.errors[0];
-    const {extensions} = firstError;
-
-    error = {
-      message: firstError.message,
-      param: extensions.param,
-      code: extensions.code,
-      type: extensions.type,
-    };
-  }
-
-  return {error, data: body.data};
-}
-
 export function createPackClient(options: CreatePackClientOptions): Pack {
-  const {apiUrl, cache, waitUntil, preview, contentEnvironment} = options;
+  const {cache, waitUntil, preview, contentEnvironment, token, apiUrl} =
+    options;
   const previewEnabled = !!preview?.session.get('enabled');
   const previewEnvironment = preview?.session.get('environment');
+
+  const clientContentEnvironment =
+    previewEnvironment || contentEnvironment || PRODUCTION_ENVIRONMENT;
+
+  const packClient = new PackClient({
+    apiUrl,
+    token,
+    contentEnvironment: clientContentEnvironment,
+  });
 
   return {
     preview,
@@ -160,23 +113,20 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
         waitUntil,
       });
 
-      // The preview environment takes precedence over the content environment
-      // provided when creating the client
-      const environment =
-        previewEnvironment || contentEnvironment || PRODUCTION_ENVIRONMENT;
-      const fetchOptions = {
-        apiUrl,
-        query,
-        variables,
-        token: options.token,
-        previewEnabled,
-        contentEnvironment: environment,
-      };
+      const queryVariables = variables ? {...variables} : {};
+      if (previewEnabled) {
+        queryVariables.version = 'CURRENT';
+      } else {
+        queryVariables.version = 'PUBLISHED';
+      }
 
       // Preview mode always bypasses the cache
-      if (previewEnabled) return packFetch<T>(fetchOptions);
+      if (previewEnabled)
+        return packClient.fetch(query, {variables: queryVariables});
 
-      return withCache(queryHash, strategy, () => packFetch<T>(fetchOptions));
+      return withCache(queryHash, strategy, () =>
+        packClient.fetch(query, {variables: queryVariables}),
+      );
     },
   };
 }
