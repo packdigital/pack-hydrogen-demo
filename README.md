@@ -32,7 +32,7 @@ Before you can run your application locally, you will need to create an `.env` f
 
 ```
 SESSION_SECRET="XXX"
-SHOPIFY_ADMIN_API_TOKEN="XXX"
+PUBLIC_STOREFRONT_API_TOKEN="XXX"
 PUBLIC_STORE_DOMAIN="XXX"
 PACK_PUBLIC_TOKEN="XXX"
 PACK_SECRET_TOKEN="XXX"
