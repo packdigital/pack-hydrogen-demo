@@ -55,6 +55,7 @@ export interface Pack {
     query: string,
     options?: QueryOptions,
   ) => Promise<QueryResponse<T>>;
+  isValidEditToken: PackClient['isValidEditToken'];
 }
 
 const PRODUCTION_ENVIRONMENT = 'production' as const;
@@ -128,5 +129,7 @@ export function createPackClient(options: CreatePackClientOptions): Pack {
         packClient.fetch(query, {variables: queryVariables}),
       );
     },
+    isValidEditToken: (token: string | null) =>
+      packClient.isValidEditToken(token),
   };
 }

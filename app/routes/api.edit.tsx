@@ -60,17 +60,20 @@ export const loader: LoaderFunction = async function ({request, context}) {
 
   const {searchParams} = new URL(request.url);
 
-  // if (!searchParams.has('secret')) {
-  //   throw new MissingSecretError();
-  // }
-
-  // if (searchParams.get('secret') !== env.PACK_SECRET_TOKEN) {
-  //   throw new InvalidSecretError();
-  // }
-
+  const token = searchParams.get('token');
   const environment = searchParams.get('environment');
   const path = searchParams.get('path') ?? ROOT_PATH;
   const redirectTo = isLocalPath(request, path) ? path : ROOT_PATH;
+
+  if (!searchParams.has('token')) {
+    throw new MissingTokenError();
+  }
+
+  const isValidToken = await pack.isValidEditToken(token);
+
+  if (!isValidToken) {
+    throw new InvalidTokenError();
+  }
 
   pack.preview.session.set('enabled', true);
   pack.preview.session.set('environment', environment);
@@ -84,14 +87,14 @@ export const loader: LoaderFunction = async function ({request, context}) {
   });
 };
 
-class MissingSecretError extends Response {
+class MissingTokenError extends Response {
   constructor() {
-    super('Missing secret', {status: 401, statusText: 'Unauthorized'});
+    super('Missing token', {status: 401, statusText: 'Unauthorized'});
   }
 }
 
-class InvalidSecretError extends Response {
+class InvalidTokenError extends Response {
   constructor() {
-    super('Invalid secret', {status: 401, statusText: 'Unauthorized'});
+    super('Invalid token', {status: 401, statusText: 'Unauthorized'});
   }
 }
