@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+    @apply font-light leading-[1.5] text-neutral-950;
+  }
+
+  h1 {
+    @apply text-4xl font-bold;
+  }
+
+  h2 {
+    @apply text-2xl font-bold;
+  }
+}
+
+@layer components {
+  .react-markdown {
+    & * {
+      @apply my-3;
+    }
+
+    & p {
+      @apply my-4;
+    }
+  }
+
+  .btn {
+    @apply px-10 py-4 flex items-center justify-center rounded text-xs uppercase hover:underline;
+  }
+
+  .btn:disabled {
+    @apply pointer-events-none opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-cyan-400;
+  }
+}
