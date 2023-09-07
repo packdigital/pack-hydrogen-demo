@@ -5,7 +5,7 @@
 
 # Pack Hydrogen Demo - A simple example storefront powered by Pack + Hydrogen
 
-<img width="1000" alt="image" src="https://github.com/packdigital/pack-hydrogen-demo/assets/5673039/7d38ecb1-4d33-4941-9da4-4ecc89021108">
+<img width="1000" alt="image" src="https://cdn.shopify.com/s/files/1/0807/6515/7649/files/Screenshot_2023-09-07_at_12.56.39_PM_1024x.png?v=1694116680">
 
 [Demo][hydrogen-pack-demo] | [Pack Platform][pack-platform]
 
