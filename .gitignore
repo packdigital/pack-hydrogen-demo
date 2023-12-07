@@ -10,3 +10,11 @@ node_modules
 
 # IntelliJ
 .idea
+
+# OS-specific files
+.DS_Store
+
+# yalc 
+yalc.lock
+.yalc
+
