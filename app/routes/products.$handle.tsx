@@ -1,5 +1,5 @@
-import {useLoaderData} from '@remix-run/react';
-import {defer, LoaderArgs} from '@shopify/remix-oxygen';
+import { useLoaderData } from '@remix-run/react';
+import { defer, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import {
   AnalyticsPageType,
   MediaFile,
@@ -7,18 +7,18 @@ import {
   ShopifyAnalyticsProduct,
   ShopPayButton,
 } from '@shopify/hydrogen';
-import {RenderSections} from '@pack/react';
+import { RenderSections } from '@pack/react';
 import ProductOptions from '~/components/ProductOptions';
 
-export function meta({data}: any) {
+export function meta({ data }: any) {
   return [
-    {title: data?.product?.title ?? 'Pack Hydrogen Demo'},
-    {description: data?.product?.description},
+    { title: data?.product?.title ?? 'Pack Hydrogen Demo' },
+    { description: data?.product?.description },
   ];
 }
 
-export async function loader({params, context, request}: LoaderArgs) {
-  const {handle} = params;
+export async function loader({ params, context, request }: LoaderFunctionArgs) {
+  const { handle } = params;
   const storeDomain = context.storefront.getShopifyDomain();
 
   const searchParams = new URL(request.url).searchParams;
@@ -26,14 +26,14 @@ export async function loader({params, context, request}: LoaderArgs) {
 
   // set selected options from the query string
   searchParams.forEach((value, name) => {
-    selectedOptions.push({name, value});
+    selectedOptions.push({ name, value });
   });
 
-  const {data} = await context.pack.query(PRODUCT_PAGE_QUERY, {
-    variables: {handle},
+  const { data } = await context.pack.query(PRODUCT_PAGE_QUERY, {
+    variables: { handle },
   });
 
-  const {product} = await context.storefront.query(PRODUCT_QUERY, {
+  const { product } = await context.storefront.query(PRODUCT_QUERY, {
     variables: {
       handle,
       selectedOptions,
@@ -41,7 +41,7 @@ export async function loader({params, context, request}: LoaderArgs) {
   });
 
   if (!data.productPage) {
-    throw new Response(null, {status: 404});
+    throw new Response(null, { status: 404 });
   }
   // optionally set a default variant, so you always have an "orderable" product selected
   const selectedVariant =
@@ -72,8 +72,9 @@ export async function loader({params, context, request}: LoaderArgs) {
 }
 
 export default function ProductHandle() {
-  const {product, productPage, selectedVariant, storeDomain} = useLoaderData();
-  const {price, compareAtPrice, availableForSale} = selectedVariant || {};
+  const { product, productPage, selectedVariant, storeDomain } =
+    useLoaderData<typeof loader>();
+  const { price, compareAtPrice, availableForSale } = selectedVariant || {};
   const orderable = availableForSale || false;
   const isDiscounted = compareAtPrice?.amount > price?.amount;
 
@@ -81,9 +82,8 @@ export default function ProductHandle() {
     <div className="grid gap-4">
       <section className="container grid items-start gap-6 lg:gap-12 md:grid-cols-2 ">
         <div
-          className={`${
-            !product?.media?.nodes?.length && 'bg-gray-100'
-          } col-span-1 aspect-square w-[80vw] md:w-full`}
+          className={`${!product?.media?.nodes?.length && 'bg-gray-100'
+            } col-span-1 aspect-square w-[80vw] md:w-full`}
         >
           <ProductGallery media={product.media.nodes} />
         </div>
@@ -108,7 +108,7 @@ export default function ProductHandle() {
 
             <h1 className="text-4xl font-bold">{product.title}</h1>
 
-            <p dangerouslySetInnerHTML={{__html: product.descriptionHtml}} />
+            <p dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
           </div>
 
           <ProductOptions
@@ -135,7 +135,7 @@ export default function ProductHandle() {
   );
 }
 
-function ProductGallery({media}: any) {
+function ProductGallery({ media }: any) {
   if (!media.length) {
     return null;
   }
@@ -160,7 +160,7 @@ function ProductGallery({media}: any) {
             ar: true,
             loading: 'eager',
             disableZoom: true,
-            style: {height: '100%', margin: '0 auto'},
+            style: { height: '100%', margin: '0 auto' },
           };
         }
 
@@ -175,9 +175,8 @@ function ProductGallery({media}: any) {
 
         return (
           <div
-            className={`${
-              i % 3 === 0 ? 'md:col-span-2' : 'md:col-span-1'
-            } snap-center card-image bg-white aspect-square md:w-full w-[80vw] rounded`}
+            className={`${i % 3 === 0 ? 'md:col-span-2' : 'md:col-span-1'
+              } snap-center card-image bg-white aspect-square md:w-full w-[80vw] rounded`}
             key={data.id || data.image.id}
           >
             <MediaFile

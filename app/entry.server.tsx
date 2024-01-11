@@ -1,8 +1,8 @@
-import {renderToReadableStream} from 'react-dom/server';
-import {RemixServer} from '@remix-run/react';
 import type {EntryContext} from '@shopify/remix-oxygen';
-
+import {RemixServer} from '@remix-run/react';
 import isbot from 'isbot';
+import {renderToReadableStream} from 'react-dom/server';
+import {createContentSecurityPolicy} from '@shopify/hydrogen';
 
 export default async function handleRequest(
   request: Request,
@@ -10,9 +10,13 @@ export default async function handleRequest(
   responseHeaders: Headers,
   remixContext: EntryContext,
 ) {
+  const {nonce, header, NonceProvider} = createContentSecurityPolicy();
   const body = await renderToReadableStream(
-    <RemixServer context={remixContext} url={request.url} />,
+    <NonceProvider>
+      <RemixServer context={remixContext} url={request.url} />
+    </NonceProvider>,
     {
+      nonce,
       signal: request.signal,
       onError(error) {
         // eslint-disable-next-line no-console

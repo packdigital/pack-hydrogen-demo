@@ -1,11 +1,11 @@
-import {useLoaderData} from '@remix-run/react';
-import {defer, LoaderArgs} from '@shopify/remix-oxygen';
-import {AnalyticsPageType} from '@shopify/hydrogen';
-import {RenderSections} from '@pack/react';
+import { useLoaderData } from '@remix-run/react';
+import { defer, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { AnalyticsPageType } from '@shopify/hydrogen';
+import { RenderSections } from '@pack/react';
 
 import CollectionGrid from '~/components/CollectionGrid';
 
-const seo = ({data}: any) => {
+const seo = ({ data }: any) => {
   return {
     title: data?.collection?.title,
     description: data?.collection?.description.substr(0, 154),
@@ -16,23 +16,23 @@ export const handle = {
   seo,
 };
 
-export function meta({data}: any) {
+export function meta({ data }: any) {
   return [
-    {title: data?.collection?.title ?? 'Pack Hydrogen Demo'},
-    {description: data?.collection?.description},
+    { title: data?.collection?.title ?? 'Pack Hydrogen Demo' },
+    { description: data?.collection?.description },
   ];
 }
 
-export async function loader({params, context, request}: LoaderArgs) {
-  const {handle} = params;
+export async function loader({ params, context, request }: LoaderFunctionArgs) {
+  const { handle } = params;
   const searchParams = new URL(request.url).searchParams;
   const cursor = searchParams.get('cursor');
 
-  const {data} = await context.pack.query(COLLECTION_PAGE_QUERY, {
-    variables: {handle},
+  const { data } = await context.pack.query(COLLECTION_PAGE_QUERY, {
+    variables: { handle },
   });
 
-  const {collection} = await context.storefront.query(COLLECTION_QUERY, {
+  const { collection } = await context.storefront.query(COLLECTION_QUERY, {
     variables: {
       handle,
       cursor,
@@ -41,7 +41,7 @@ export async function loader({params, context, request}: LoaderArgs) {
 
   // Handle 404s
   if (!data.collectionPage) {
-    throw new Response(null, {status: 404});
+    throw new Response(null, { status: 404 });
   }
 
   const analytics = {
@@ -58,7 +58,7 @@ export async function loader({params, context, request}: LoaderArgs) {
 }
 
 export default function Collection() {
-  const {collection, collectionPage} = useLoaderData();
+  const { collection, collectionPage } = useLoaderData<typeof loader>();
 
   return (
     <div className="grid gap-4">

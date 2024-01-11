@@ -1,29 +1,29 @@
-import {useLoaderData} from '@remix-run/react';
-import {defer, LoaderArgs} from '@shopify/remix-oxygen';
-import {AnalyticsPageType} from '@shopify/hydrogen';
-import {RenderSections} from '@pack/react';
+import { useLoaderData } from '@remix-run/react';
+import { defer, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { AnalyticsPageType } from '@shopify/hydrogen';
+import { RenderSections } from '@pack/react';
 
-export function meta({data}: any) {
+export function meta({ data }: any) {
   return [
-    {title: data?.blog?.title ?? 'Pack Hydrogen Demo'},
-    {description: data?.blog?.description},
+    { title: data?.blog?.title ?? 'Pack Hydrogen Demo' },
+    { description: data?.blog?.description },
   ];
 }
 
-export async function loader({params, context}: LoaderArgs) {
-  const {handle} = params;
-  const {data} = await context.pack.query(BLOG_QUERY, {variables: {handle}});
-  const analytics = {pageType: AnalyticsPageType.blog};
+export async function loader({ params, context }: LoaderFunctionArgs) {
+  const { handle } = params;
+  const { data } = await context.pack.query(BLOG_QUERY, { variables: { handle } });
+  const analytics = { pageType: AnalyticsPageType.blog };
 
   if (!data.blog) {
-    throw new Response(null, {status: 404});
+    throw new Response(null, { status: 404 });
   }
 
-  return defer({blog: data.blog, analytics});
+  return defer({ blog: data.blog, analytics });
 }
 
 export default function Blog() {
-  const {blog} = useLoaderData();
+  const { blog } = useLoaderData<typeof loader>();
 
   return (
     <div>

@@ -1,32 +1,32 @@
-import {useLoaderData} from '@remix-run/react';
-import {defer, LoaderArgs} from '@shopify/remix-oxygen';
-import {AnalyticsPageType} from '@shopify/hydrogen';
-import {RenderSections} from '@pack/react';
+import { useLoaderData } from '@remix-run/react';
+import { defer, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { AnalyticsPageType } from '@shopify/hydrogen';
+import { RenderSections } from '@pack/react';
 
-export function meta({data}: any) {
+export function meta({ data }: any) {
   return [
-    {title: data?.article?.title ?? 'Pack Hydrogen Demo'},
-    {description: data?.article?.description},
+    { title: data?.article?.title ?? 'Pack Hydrogen Demo' },
+    { description: data?.article?.description },
   ];
 }
 
-export async function loader({params, context}: LoaderArgs) {
-  const {handle} = params;
-  const {data} = await context.pack.query<any>(ARTICLE_QUERY, {
-    variables: {handle},
+export async function loader({ params, context }: LoaderFunctionArgs) {
+  const { handle } = params;
+  const { data } = await context.pack.query<any>(ARTICLE_QUERY, {
+    variables: { handle },
   });
 
-  const analytics = {pageType: AnalyticsPageType.article};
+  const analytics = { pageType: AnalyticsPageType.article };
 
   if (!data.article) {
-    throw new Response(null, {status: 404});
+    throw new Response(null, { status: 404 });
   }
 
-  return defer({article: data.article, analytics});
+  return defer({ article: data.article, analytics });
 }
 
 export default function Article() {
-  const {article} = useLoaderData();
+  const { article } = useLoaderData<typeof loader>();
 
   return (
     <div className="grid gap-4">
