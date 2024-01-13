@@ -1,19 +1,19 @@
-import { useLoaderData } from '@remix-run/react';
-import { defer, LoaderArgs } from '@shopify/remix-oxygen';
-import { AnalyticsPageType } from '@shopify/hydrogen';
-import { RenderSections } from '@pack/react';
+import {useLoaderData} from '@remix-run/react';
+import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {AnalyticsPageType} from '@shopify/hydrogen';
+import {RenderSections} from '@pack/react';
 
-export function meta({ data }: any) {
+export function meta({data}: any) {
   return [
-    { title: data?.page?.title ?? 'Pack Hydrogen Demo' },
-    { description: data?.page?.description },
+    {title: data?.page?.title ?? 'Pack Hydrogen Demo'},
+    {description: data?.page?.description},
   ];
 }
 
-export async function loader({ context }: LoaderArgs) {
-  const { data } = await context.pack.query(HOME_PAGE_QUERY);
+export async function loader({context}: LoaderFunctionArgs) {
+  const {data} = await context.pack.query(HOME_PAGE_QUERY);
 
-  const analytics = { pageType: AnalyticsPageType.home };
+  const analytics = {pageType: AnalyticsPageType.home};
 
   return defer({
     page: data.page,
@@ -22,7 +22,7 @@ export async function loader({ context }: LoaderArgs) {
 }
 
 export default function Index() {
-  const { page } = useLoaderData();
+  const {page} = useLoaderData<typeof loader>();
 
   return (
     <div className="grid gap-4">

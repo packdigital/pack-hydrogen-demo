@@ -9,29 +9,29 @@ import {
   useMatches,
   useRouteError,
 } from '@remix-run/react';
-import { Seo, ShopifySalesChannel, useShopifyCookies } from '@shopify/hydrogen';
-import { LoaderArgs } from '@shopify/remix-oxygen';
+import {Seo, ShopifySalesChannel, useShopifyCookies} from '@shopify/hydrogen';
+import {SerializeFrom, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 import favicon from '../public/favicon.svg';
 import styles from '~/styles/app.css';
 
-import { DEFAULT_LOCALE } from '~/lib/utils';
-import { PreviewProvider } from '@pack/react';
+import {DEFAULT_LOCALE} from '~/lib/utils';
+import {PreviewProvider} from '@pack/react';
 
-import { useAnalytics } from '~/hooks/useAnalytics';
-import { Layout } from '~/components/Layout';
-import { NotFound } from '~/components/NotFound';
-import { GenericError } from '~/components/GenericError';
+import {useAnalytics} from '~/hooks/useAnalytics';
+import {Layout} from '~/components/Layout';
+import {NotFound} from '~/components/NotFound';
+import {GenericError} from '~/components/GenericError';
 
-import { registerSections } from '~/sections';
-import { registerStorefrontSettings } from '~/settings';
+import {registerSections} from '~/sections';
+import {registerStorefrontSettings} from '~/settings';
 
 registerSections();
 registerStorefrontSettings();
 
 export const links = () => {
   return [
-    { rel: 'stylesheet', href: styles },
+    {rel: 'stylesheet', href: styles},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
@@ -40,14 +40,17 @@ export const links = () => {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
-    { rel: 'icon', type: 'image/svg+xml', href: favicon },
+    {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];
 };
 
-export async function loader({ context }: LoaderArgs) {
-  const isPreviewModeEnabled = context.pack.isPreviewModeEnabled();
+export async function loader({context}: LoaderFunctionArgs) {
+  const {env, storefront, session, pack} = context;
+  const isPreviewModeEnabled = pack.isPreviewModeEnabled();
 
-  const siteSettings = await context.pack.query(SITE_SETTINGS_QUERY);
+  // const isPreviewModeEnabled = context.pack.isPreviewModeEnabled();
+
+  const siteSettings = await pack.query(SITE_SETTINGS_QUERY);
   const layout = await context.storefront.query(LAYOUT_QUERY);
 
   const analytics = {
@@ -65,9 +68,9 @@ export async function loader({ context }: LoaderArgs) {
 
 export default function App() {
   const hasUserConsent = true;
-  const { siteSettings, isPreviewModeEnabled } = useLoaderData();
+  const {siteSettings, isPreviewModeEnabled} = useLoaderData<typeof loader>();
 
-  useShopifyCookies({ hasUserConsent });
+  useShopifyCookies({hasUserConsent});
   useAnalytics(hasUserConsent, DEFAULT_LOCALE);
 
   return (
@@ -96,11 +99,15 @@ export default function App() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
+export const useRootLoaderData = () => {
   const [root] = useMatches();
-  const locale = root?.data?.selectedLocale ?? DEFAULT_LOCALE;
+  return root?.data as SerializeFrom<typeof loader>;
+};
+
+export function ErrorBoundary({error}: {error: Error}) {
   const routeError = useRouteError();
   const isRouteError = isRouteErrorResponse(routeError);
+  const rootData = useRootLoaderData();
 
   let title = 'Error';
   let pageType = 'page';
@@ -111,7 +118,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
   }
 
   return (
-    <html lang={locale.language}>
+    <html>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -120,14 +127,14 @@ export function ErrorBoundary({ error }: { error: Error }) {
         <Links />
       </head>
       <body>
-        <Layout key={`${locale.language}-${locale.country}`}>
+        <Layout {...rootData}>
           {isRouteError ? (
             <>
               {routeError.status === 404 ? (
                 <NotFound type={pageType} />
               ) : (
                 <GenericError
-                  error={{ message: `${routeError.status} ${routeError.data}` }}
+                  error={{message: `${routeError.status} ${routeError.data}`}}
                 />
               )}
             </>

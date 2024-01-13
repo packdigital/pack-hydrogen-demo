@@ -1,6 +1,6 @@
-import { Markdown } from '~/components/Markdown';
+import {Markdown} from '~/components/Markdown';
 
-export const TextBlock = ({ cms }: any) => {
+export const TextBlock = ({cms}: any) => {
   return (
     <Markdown className="mx-auto max-w-3xl py-6 px-4 lg:px-6">
       {cms?.text}

@@ -1,31 +1,31 @@
-import {defer, LoaderArgs} from '@shopify/remix-oxygen';
-import {useLoaderData} from '@remix-run/react';
-import {AnalyticsPageType} from '@shopify/hydrogen';
-import {RenderSections} from '@pack/react';
+import { defer, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { useLoaderData } from '@remix-run/react';
+import { AnalyticsPageType } from '@shopify/hydrogen';
+import { RenderSections } from '@pack/react';
 
-export function meta({data}: any) {
+export function meta({ data }: any) {
   return [
-    {title: data?.page?.title ?? 'Pack Hydrogen Demo'},
-    {description: data?.page?.description},
+    { title: data?.page?.title ?? 'Pack Hydrogen Demo' },
+    { description: data?.page?.description },
   ];
 }
 
-export async function loader({params, context}: LoaderArgs) {
-  const {handle} = params;
-  const {data} = await context.pack.query(PAGE_QUERY, {
-    variables: {handle},
+export async function loader({ params, context }: LoaderFunctionArgs) {
+  const { handle } = params;
+  const { data } = await context.pack.query(PAGE_QUERY, {
+    variables: { handle },
   });
-  const analytics = {pageType: AnalyticsPageType.page};
+  const analytics = { pageType: AnalyticsPageType.page };
 
   if (!data.page) {
-    throw new Response(null, {status: 404, statusText: 'Not found'});
+    throw new Response(null, { status: 404, statusText: 'Not found' });
   }
 
-  return defer({page: data.page, analytics});
+  return defer({ page: data.page, analytics });
 }
 
 export default function Page() {
-  const {page} = useLoaderData();
+  const { page } = useLoaderData<typeof loader>();
 
   return (
     <div>
