@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "shopify hydrogen build",
-    "dev": "shopify hydrogen dev --worker --codegen",
+    "dev": "shopify hydrogen dev --worker --codegen --port 8080",
     "preview": "npm run build && shopify hydrogen preview --worker",
     "lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
     "typecheck": "tsc --noEmit",
@@ -14,8 +14,8 @@
   "prettier": "@shopify/prettier-config",
   "dependencies": {
     "@pack/client": "^0.0.7",
-    "@pack/hydrogen": "^0.0.7",
-    "@pack/react": "^0.0.14",
+    "@pack/hydrogen": "^0.1.0",
+    "@pack/react": "^0.1.0",
     "@remix-run/react": "^2.4.1",
     "@shopify/cli": "^3.53.0",
     "@shopify/cli-hydrogen": "^6.1.0",

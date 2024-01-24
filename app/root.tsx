@@ -63,12 +63,14 @@ export async function loader({context}: LoaderFunctionArgs) {
     layout,
     isPreviewModeEnabled,
     analytics,
+    customizerMeta: pack.preview?.session.get('customizerMeta'),
   };
 }
 
 export default function App() {
   const hasUserConsent = true;
-  const {siteSettings, isPreviewModeEnabled} = useLoaderData<typeof loader>();
+  const {siteSettings, isPreviewModeEnabled, customizerMeta} =
+    useLoaderData<typeof loader>();
 
   useShopifyCookies({hasUserConsent});
   useAnalytics(hasUserConsent, DEFAULT_LOCALE);
@@ -87,6 +89,7 @@ export default function App() {
         <PreviewProvider
           isPreviewModeEnabled={isPreviewModeEnabled}
           siteSettings={siteSettings}
+          customizerMeta={customizerMeta}
         >
           <Layout>
             <Outlet />
