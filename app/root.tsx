@@ -10,7 +10,7 @@ import {
   useRouteError,
 } from '@remix-run/react';
 import {Seo, ShopifySalesChannel, useShopifyCookies} from '@shopify/hydrogen';
-import {SerializeFrom, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, SerializeFrom, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 import favicon from '../public/favicon.svg';
 import styles from '~/styles/app.css';
@@ -58,13 +58,17 @@ export async function loader({context}: LoaderFunctionArgs) {
     shopId: layout.shop.id,
   };
 
-  return {
+  return json({
     siteSettings,
     layout,
     isPreviewModeEnabled,
     analytics,
     customizerMeta: pack.preview?.session.get('customizerMeta'),
-  };
+  }, {
+    headers: {
+      "Set-Cookie": await pack.preview?.session.commit(),
+    },
+  });
 }
 
 export default function App() {
