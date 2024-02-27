@@ -58,17 +58,13 @@ export async function loader({context}: LoaderFunctionArgs) {
     shopId: layout.shop.id,
   };
 
-  return json({
+  return {
     siteSettings,
     layout,
     isPreviewModeEnabled,
     analytics,
     customizerMeta: pack.preview?.session.get('customizerMeta'),
-  }, {
-    headers: {
-      "Set-Cookie": await pack.preview?.session.commit(),
-    },
-  });
+  };
 }
 
 export default function App() {
