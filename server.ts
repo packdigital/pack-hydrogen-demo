@@ -8,13 +8,12 @@ import {
   storefrontRedirect,
 } from '@shopify/hydrogen';
 import {
-  createRequestHandler,
   getStorefrontHeaders,
   createCookieSessionStorage,
   type SessionStorage,
   type Session,
 } from '@shopify/remix-oxygen';
-import {createPackClient, PreviewSession} from '@pack/hydrogen';
+import {createRequestHandler} from '@pack/hydrogen';
 
 /**
  * Export a fetch handler in module format.
@@ -26,26 +25,12 @@ export default {
     executionContext: ExecutionContext,
   ): Promise<Response> {
     try {
-      /**
-       * Open a cache instance in the worker and a custom session instance.
-       */
-      if (!env?.SESSION_SECRET) {
-        throw new Error('SESSION_SECRET environment variable is not set');
-      }
-
       const waitUntil = executionContext.waitUntil.bind(executionContext);
-      const [cache, session, previewSession] = await Promise.all([
+      const [cache, session] = await Promise.all([
         caches.open('hydrogen'),
         HydrogenSession.init(request, [env.SESSION_SECRET]),
-        PreviewSession.init(request, [env.SESSION_SECRET]),
       ]);
-      const pack = createPackClient({
-        cache,
-        waitUntil,
-        token: env.PACK_SECRET_TOKEN,
-        preview: {session: previewSession},
-        contentEnvironment: env.PACK_CONTENT_ENVIRONMENT,
-      });
+
       /**
        * Create Hydrogen's Storefront client.
        */
@@ -72,18 +57,24 @@ export default {
       });
 
       /**
-       * Create a Remix request handler and pass
+       * Create a Pack Remix request handler and pass
        * Hydrogen's Storefront client to the loader context.
        */
-      const handleRequest = createRequestHandler({
+      const handleRequest = await createRequestHandler({
+        request,
+        env,
         build: remixBuild,
         mode: process.env.NODE_ENV,
         getLoadContext: () => ({
+          cache,
+          waitUntil,
           session,
           storefront,
           cart,
-          pack,
           env,
+        }),
+        packClientOptions: {
+          cache,
           waitUntil,
         }),
       });
