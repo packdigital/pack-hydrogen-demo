@@ -47,7 +47,6 @@ export const links = () => {
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {env, storefront, session, pack} = context;
-  console.log(context)
   const isPreviewModeEnabled = pack.isPreviewModeEnabled();
 
   // const isPreviewModeEnabled = context.pack.isPreviewModeEnabled();
@@ -61,10 +60,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   };
 
   return {
-    pack: {
-      storefrontId: "douglas_store",
-      publicToken: 'p.eyJ1IjogIjJmMjk2MTJhLWQwOWMtNDdkMC05ODlkLWMwNmE4YjhkMjA3NSIsICJpZCI6ICI0NzYzODMyMi0wZDNjLTQzNjItYjlhYi02ZjU4YmFmMWY1ZTYiLCAiaG9zdCI6ICJ1cy1lYXN0LWF3cyJ9.YqEbvM5cgRMamtbbydhdxEcuydSqL6xpnhRQ13SnsMo',
-    },
+    pack,
     siteSettings,
     layout,
     isPreviewModeEnabled,
