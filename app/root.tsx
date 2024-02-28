@@ -10,7 +10,7 @@ import {
   useRouteError,
 } from '@remix-run/react';
 import {Seo, ShopifySalesChannel, useShopifyCookies} from '@shopify/hydrogen';
-import {json, SerializeFrom, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {SerializeFrom, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 import favicon from '../public/favicon.svg';
 import styles from '~/styles/app.css';
