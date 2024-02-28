@@ -25,7 +25,7 @@ import {GenericError} from '~/components/GenericError';
 
 import {registerSections} from '~/sections';
 import {registerStorefrontSettings} from '~/settings';
-import {withPack} from "@pack/packlytics";
+import {PackAnalytics, withPack} from "@pack/packlytics";
 
 registerSections();
 registerStorefrontSettings();
@@ -69,9 +69,9 @@ export async function loader({context}: LoaderFunctionArgs) {
   };
 }
 
-function App() {
+export default function App() {
   const hasUserConsent = true;
-  const {siteSettings, isPreviewModeEnabled, customizerMeta} =
+  const {siteSettings, isPreviewModeEnabled, customizerMeta, pack} =
     useLoaderData<typeof loader>();
 
   useShopifyCookies({hasUserConsent});
@@ -85,6 +85,7 @@ function App() {
         <Seo />
         <Meta />
         <Links />
+        <PackAnalytics />
       </head>
 
       <body>
@@ -104,7 +105,7 @@ function App() {
   );
 }
 
-export default withPack(App);
+// export default withPack(App);
 
 export const useRootLoaderData = () => {
   const [root] = useMatches();
