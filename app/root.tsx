@@ -25,7 +25,6 @@ import {GenericError} from '~/components/GenericError';
 
 import {registerSections} from '~/sections';
 import {registerStorefrontSettings} from '~/settings';
-import {PackAnalytics, withPack} from "@pack/packlytics";
 
 registerSections();
 registerStorefrontSettings();
@@ -85,7 +84,6 @@ export default function App() {
         <Seo />
         <Meta />
         <Links />
-        <PackAnalytics />
       </head>
 
       <body>
@@ -104,8 +102,6 @@ export default function App() {
     </html>
   );
 }
-
-// export default withPack(App);
 
 export const useRootLoaderData = () => {
   const [root] = useMatches();

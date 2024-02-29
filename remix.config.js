@@ -16,4 +16,9 @@ module.exports = {
   serverModuleFormat: 'esm',
   serverPlatform: 'neutral',
   serverMinify: process.env.NODE_ENV === 'production',
+  serverNodeBuiltinsPolyfill: {
+    modules: {
+      crypto: true, // Provide a JSPM polyfill
+    },
+  },
 };
