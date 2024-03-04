@@ -25,6 +25,7 @@ import {GenericError} from '~/components/GenericError';
 
 import {registerSections} from '~/sections';
 import {registerStorefrontSettings} from '~/settings';
+import {usePackCookies} from "@pack/hydrogen";
 
 registerSections();
 registerStorefrontSettings();
@@ -73,7 +74,7 @@ export default function App() {
   const {siteSettings, isPreviewModeEnabled, customizerMeta, pack} =
     useLoaderData<typeof loader>();
 
-  useShopifyCookies({hasUserConsent});
+  usePackCookies({hasUserConsent})
   useAnalytics(hasUserConsent, DEFAULT_LOCALE);
 
   return (
