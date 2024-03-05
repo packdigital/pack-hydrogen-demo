@@ -56,6 +56,7 @@ declare module '@shopify/remix-oxygen' {
     cart: HydrogenCart;
     storefront: Storefront<I18nLocale>;
     session: HydrogenSession;
+    pack: Pack;
     waitUntil: ExecutionContext['waitUntil'];
   }
 
