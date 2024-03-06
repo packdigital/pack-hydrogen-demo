@@ -26,7 +26,6 @@ import {GenericError} from '~/components/GenericError';
 import {registerSections} from '~/sections';
 import {registerStorefrontSettings} from '~/settings';
 import {usePackCookies} from "@pack/hydrogen";
-import {useAbTest, useAbTestHandle, useAbTestId, useAbTestVariantHandle, useAbTestVariantId} from "@pack/hydrogen";
 
 registerSections();
 registerStorefrontSettings();
@@ -72,14 +71,6 @@ export default function App() {
   const hasUserConsent = true;
   const {siteSettings, isPreviewModeEnabled, customizerMeta} =
     useLoaderData<typeof loader>();
-
-  const test = useAbTest()
-
-  console.log(test)
-  console.log(useAbTestId())
-  console.log(useAbTestHandle())
-  console.log(useAbTestVariantId())
-  console.log(useAbTestVariantHandle())
 
   usePackCookies({hasUserConsent})
   useAnalytics(hasUserConsent, DEFAULT_LOCALE);
