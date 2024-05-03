@@ -63,7 +63,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     siteSettings,
     layout,
     analytics,
-    ...pack.useRootLoaderData(),
+    ...pack.getPackSessionData(),
   };
 }
 
@@ -102,7 +102,7 @@ export default function App() {
   );
 }
 
-export const useRootLoaderData = () => {
+export const getPackSessionData = () => {
   const [root] = useMatches();
   return root?.data as SerializeFrom<typeof loader>;
 };
@@ -110,7 +110,7 @@ export const useRootLoaderData = () => {
 export function ErrorBoundary({error}: {error: Error}) {
   const routeError = useRouteError();
   const isRouteError = isRouteErrorResponse(routeError);
-  const rootData = useRootLoaderData();
+  const rootData = getPackSessionData();
 
   let title = 'Error';
   let pageType = 'page';
