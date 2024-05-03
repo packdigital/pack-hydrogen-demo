@@ -63,7 +63,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     siteSettings,
     layout,
     analytics,
-    ...pack.getInitLoaderData(),
+    ...pack.useRootLoaderData(),
   };
 }
 
