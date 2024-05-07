@@ -43,6 +43,12 @@ export default {
         pack.sessionInit(request, [env.SESSION_SECRET]),
       ]);
 
+      const packCLient = pack.createPackClient({
+        cache,
+        waitUntil,
+        apiUrl: 'http://localhost:3030/graphql',
+      });
+
       /**
        * Create Hydrogen's Storefront client.
        */
@@ -66,12 +72,6 @@ export default {
         getCartId: cartGetIdDefault(request.headers),
         setCartId: cartSetIdDefault(),
         cartQueryFragment: CART_QUERY_FRAGMENT,
-      });
-
-      const packCLient = pack.createPackClient({
-        cache,
-        waitUntil,
-        apiUrl: 'http://localhost:3030/graphql',
       });
 
       /**
