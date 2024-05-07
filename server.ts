@@ -8,12 +8,13 @@ import {
   storefrontRedirect,
 } from '@shopify/hydrogen';
 import {
+  createRequestHandler,
   getStorefrontHeaders,
   createCookieSessionStorage,
   type SessionStorage,
   type Session,
 } from '@shopify/remix-oxygen';
-import {createRequestHandler} from '@pack/hydrogen';
+import {Pack} from '@pack/hydrogen';
 
 /**
  * Export a fetch handler in module format.
@@ -25,10 +26,21 @@ export default {
     executionContext: ExecutionContext,
   ): Promise<Response> {
     try {
+      /**
+       * Open a cache instance in the worker and a custom session instance.
+       */
+      if (!env?.SESSION_SECRET) {
+        throw new Error('SESSION_SECRET environment variable is not set');
+      }
+
+      const pack = new Pack(request, env);
+
       const waitUntil = executionContext.waitUntil.bind(executionContext);
-      const [cache, session] = await Promise.all([
+
+      const [cache, session, packSession] = await Promise.all([
         caches.open('hydrogen'),
         HydrogenSession.init(request, [env.SESSION_SECRET]),
+        pack.sessionInit(request, [env.SESSION_SECRET]),
       ]);
 
       /**
@@ -56,30 +68,30 @@ export default {
         cartQueryFragment: CART_QUERY_FRAGMENT,
       });
 
-      /**
-       * Create a Pack Remix request handler and pass
-       * Hydrogen's Storefront client to the loader context.
-       */
-      const handleRequest = await createRequestHandler({
-        request,
-        env,
-        build: remixBuild,
-        mode: process.env.NODE_ENV,
-        getLoadContext: () => ({
-          cache,
-          waitUntil,
-          session,
-          storefront,
-          cart,
-          env,
-        }),
-        packClientOptions: {
-          cache,
-          waitUntil,
-        }),
+      const packCLient = pack.createPackClient({
+        cache,
+        waitUntil,
+        apiUrl: 'http://localhost:3030/graphql',
       });
 
-      const response = await handleRequest(request);
+      /**
+       * Create a Remix request handler and pass
+       * Hydrogen's Storefront client to the loader context.
+       */
+      const response = await pack.handleRequest(
+        createRequestHandler({
+          build: remixBuild,
+          mode: process.env.NODE_ENV,
+          getLoadContext: () => ({
+            session,
+            storefront,
+            cart,
+            pack: packCLient,
+            env,
+            waitUntil,
+          }),
+        }),
+      );
 
       if (response.status === 404) {
         /**
