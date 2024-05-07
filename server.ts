@@ -46,7 +46,6 @@ export default {
       const packCLient = pack.createPackClient({
         cache,
         waitUntil,
-        apiUrl: 'http://localhost:3030/graphql',
       });
 
       /**
