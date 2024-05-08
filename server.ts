@@ -46,6 +46,7 @@ export default {
       const packCLient = pack.createPackClient({
         cache,
         waitUntil,
+        session: packSession
       });
 
       /**
