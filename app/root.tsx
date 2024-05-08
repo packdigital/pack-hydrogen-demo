@@ -25,7 +25,7 @@ import {GenericError} from '~/components/GenericError';
 
 import {registerSections} from '~/sections';
 import {registerStorefrontSettings} from '~/settings';
-import {usePackCookies} from "@pack/hydrogen";
+import {usePackCookies} from '@pack/hydrogen';
 
 registerSections();
 registerStorefrontSettings();
@@ -72,7 +72,8 @@ export default function App() {
   const {siteSettings, isPreviewModeEnabled, customizerMeta} =
     useLoaderData<typeof loader>();
 
-  usePackCookies({hasUserConsent})
+  useShopifyCookies({hasUserConsent});
+  usePackCookies({hasUserConsent});
   useAnalytics(hasUserConsent, DEFAULT_LOCALE);
 
   return (
@@ -102,7 +103,7 @@ export default function App() {
   );
 }
 
-export const getPackSessionData = () => {
+export const useRootLoaderData = () => {
   const [root] = useMatches();
   return root?.data as SerializeFrom<typeof loader>;
 };
@@ -110,7 +111,7 @@ export const getPackSessionData = () => {
 export function ErrorBoundary({error}: {error: Error}) {
   const routeError = useRouteError();
   const isRouteError = isRouteErrorResponse(routeError);
-  const rootData = getPackSessionData();
+  const rootData = useRootLoaderData();
 
   let title = 'Error';
   let pageType = 'page';
