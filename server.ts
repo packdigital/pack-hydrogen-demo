@@ -14,7 +14,7 @@ import {
   type SessionStorage,
   type Session,
 } from '@shopify/remix-oxygen';
-import {Pack} from '@pack/hydrogen';
+import { PackSession, createPackClient, handleRequest } from '@pack/hydrogen';
 
 /**
  * Export a fetch handler in module format.
@@ -33,21 +33,23 @@ export default {
         throw new Error('SESSION_SECRET environment variable is not set');
       }
 
-      const pack = new Pack(request, env);
-
       const waitUntil = executionContext.waitUntil.bind(executionContext);
 
       const [cache, session, packSession] = await Promise.all([
         caches.open('hydrogen'),
         HydrogenSession.init(request, [env.SESSION_SECRET]),
-        pack.sessionInit(request, [env.SESSION_SECRET]),
+        PackSession.init(request, [env.SESSION_SECRET])
       ]);
 
-      const packCLient = pack.createPackClient({
+      const pack = createPackClient({
         cache,
         waitUntil,
-        session: packSession
-      });
+        storeId: env.PACK_STOREFRONT_ID,
+        token: env.PACK_SECRET_TOKEN,
+        session: packSession,
+        preview: { session: packSession },
+        contentEnvironment: env.PACK_CONTENT_ENVIRONMENT
+      })
 
       /**
        * Create Hydrogen's Storefront client.
@@ -78,7 +80,9 @@ export default {
        * Create a Remix request handler and pass
        * Hydrogen's Storefront client to the loader context.
        */
-      const response = await pack.handleRequest(
+      const response = await handleRequest(
+        pack,
+        request,
         createRequestHandler({
           build: remixBuild,
           mode: process.env.NODE_ENV,
@@ -86,11 +90,11 @@ export default {
             session,
             storefront,
             cart,
-            pack: packCLient,
+            pack,
             env,
             waitUntil,
           }),
-        }),
+        })
       );
 
       if (response.status === 404) {

@@ -31,6 +31,7 @@ declare global {
     PUBLIC_STOREFRONT_ID: string;
     PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID: string;
     PUBLIC_CUSTOMER_ACCOUNT_API_URL: string;
+    PACK_STOREFRONT_ID: string;
     PACK_PUBLIC_TOKEN: string;
     PACK_SECRET_TOKEN: string;
     PACK_CONTENT_ENVIRONMENT?: string;
